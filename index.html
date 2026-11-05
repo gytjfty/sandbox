@@ -34,15 +34,20 @@
      </div>
      <p class="status" id="presetStatus"></p>
     </div>
-    <p>The physical player now uses a universal-variable state propagator for bound, near-parabolic and unbound stellar trajectories. Passing escape energy no longer rejects an otherwise supported velocity change.</p>
+    <p>The physical player now uses a universal-variable state propagator for bound, near-parabolic and unbound stellar trajectories. Passing escape energy no longer rejects an otherwise supported velocity change. The HUD explicitly names the trajectory and its one reference star. No automatic gravitational handoffs.</p>
     <div class="box">
-     <p>NEW: Local Gravity tab adds a separate numerical player mode pulled by the system's star and planets.</p>
+     <p>NEW: Local Gravity tab adds a separate numerical player mode pulled by the system's star and planets. Original Explorer and single-star Player Flight remain available. Planet masses are synthetic density proxies; planetary orbits remain prescribed. No terrain or survival systems added.</p>
      <button id="openGravityMenu">Local Gravity setup</button>
     </div>
     <button class="primary" id="enter">Initializing…</button>
     <div class="row">
      <button id="openPanel">I · Player Flight / directory / orbital lab</button>
     </div>
+    <p>Player Flight adds a timestamped maneuver journal with RTN and inertial Δv, before/after velocities and resulting trajectory classes. Preview never applies a change. Bound paths display a closed orbit when the period is numerically practical; open and very-long-period paths display a labeled forward prediction window.</p>
+    <p class="fine">Physical controls: W/S ±transverse, D/A ±radial, E/Q ±normal; one ideal impulse per new press. Comma/period change pulse size, not velocity. No instant brake, finite engine/fuel model or physical autopilot. Mouse only changes view. The player and planets share one simulation clock; pausing freezes coast, not an explicitly requested impulse.</p>
+    <p class="fine">Player reference is one fixed star with μ=G Mstar. No planet gravity, N-body perturbations, stellar recoil, relativity or collisions. Star-intersecting conics and degenerate radial states remain explicitly rejected. Far from the star, this is still the same single-star approximation; entering a display region never changes the force model.</p>
+    <p class="fine">Old fixed-star-player-v1 checkpoints are verified and migrated on restore to a Cartesian seed at their saved conic epoch. Their earlier maneuver history cannot be recovered and is not invented. Saving writes universal-player-v2 in the same per-session player key; older releases cannot read the new format. Export the old checkpoint before replacing it if you need rollback.</p>
+    <p class="fine">Explorer, physical player and world edits keep independent save contracts. K saves world + active navigation mode only. Returning to Explorer changes neither live player trajectory nor stored checkpoint. Restoring player JSON explicitly restores the shared clock. Existing v4/v5 population and planar/spatial namespaces remain intact.</p>
     <p class="fine" id="error">Internet required for Three.js. NULL needs Blob workers, pointer lock and local storage.</p>
    </article>
   </div>
@@ -66,10 +71,11 @@
     </div>
     <section class="section" id="gravity">
      <h2>LOCAL GRAVITY / STAR + PLANETS</h2>
+     <p>New independent physical mode. All planets in the selected star system contribute gravity simultaneously. Their orbits remain prescribed; planets do not perturb one another and the star stays fixed. No galaxy-wide force model or automatic system handoff.</p>
      <div class="box">
       <pre id="gravityInfo"></pre>
       <div class="row">
-       <label>Drop altitude [m]<input id="gravityAltitude" max="1000000000" min="10" type="number" value="1000"/></label>
+       <label>Drop altitude above selected planet [m]<input id="gravityAltitude" max="1000000000" min="10" type="number" value="1000"/></label>
        <label>Manual acceleration [m/s²]<input id="gravityThrust" max="1000" min="0.01" type="number" value="20"/></label>
       </div>
       <div class="row">
@@ -78,6 +84,7 @@
        <button id="gravityCurrent">Use Explorer current state</button>
        <button id="gravityLeave">Return to Explorer</button>
       </div>
+      <p class="fine">Initialization requires paused clock and Explorer mode. Drop inherits the planet's translational velocity. Demo assigns a planet-relative circular speed, not an exact orbit in the combined field. WASD / E Q apply continuous camera-relative ideal thrust while held. No fuel or engine model. SPACE pauses the clock; it is not jump. Surface contact is an inelastic sphere-contact lock, not walkable terrain or a damage model. Any manual thrust releases contact. Start at time ×1.</p>
      </div>
      <div class="row"><button id="gravitySetThrust">Set manual acceleration</button></div>
      <h2>INDEPENDENT LOCAL-GRAVITY CHECKPOINT</h2>
@@ -89,6 +96,7 @@
      </div>
      <textarea id="gravityJSON" placeholder="local-gravity-player-v1 checkpoint"></textarea>
      <p class="status" id="gravityStatus"></p>
+     <p class="fine">Separate key from the original single-star physical checkpoint. Stores latest state, not a maneuver replay or historical trajectory. Restoring requires the same world-event signature. High time rates may exceed the work budget and pause atomically. Numerical gravity is not guaranteed energy conserving in a moving, prescribed field. Planet masses use assigned toy density (5,500 kg/m³ small / 1,300 kg/m³ giant), not measured catalog masses.</p>
     </section>
     <section class="section" id="flight">
      <pre id="playerText"></pre>
@@ -105,6 +113,7 @@
        <button id="leaveFlight">Return to Explorer</button>
        <button id="setPrediction">Set prediction span</button>
       </div>
+      <p class="fine">Pause before initialization. Demo explicitly places the player and assigns orbital velocity; current-state handoff requires Explorer in the same star's system and preserves its state without capture/rescaling. Bound, flyby and escape states are now accepted if they do not intersect the star. Input speeds above 10,000 km/s and degenerate states are rejected by explicit model/numerical safety limits.</p>
      </div>
      <h2>PLAYER IDEAL RTN VELOCITY CHANGE</h2>
      <div class="box">
@@ -120,8 +129,9 @@
        <button id="setPulse">Set keyboard pulse size</button>
       </div>
       <pre id="playerPreview"></pre>
+      <p class="fine">R is outward, N follows r×v, T=N×R. No force reference is switched. Star-intersecting results are rejected atomically. A near-parabolic label is a numerical classification tolerance, not an energy snap; the signed energy remains displayed.</p>
      </div>
-     <h2>PLAYER MANEUVER JOURNAL</h2>
+     <h2>PLAYER MANEUVER JOURNAL · APPLIED EVENTS ONLY</h2>
      <pre id="maneuverLog"></pre>
      <h2>INDEPENDENT PLAYER CHECKPOINT</h2>
      <div class="row">
@@ -130,7 +140,7 @@
       <button id="exportPlayer">Export last saved player JSON</button>
       <button id="importPlayer">Verify JSON + restore</button>
      </div>
-     <textarea id="playerJSON" placeholder="Player checkpoint JSON"></textarea>
+     <textarea id="playerJSON" placeholder="Player checkpoint JSON; v1 bound saves are accepted for migration"></textarea>
      <p class="status" id="flightStatus"></p>
     </section>
     <section class="section active" id="browse">
@@ -151,6 +161,7 @@
      </div>
      <p class="status" id="listStatus"></p>
      <div id="objectRows"></div>
+     <p class="fine">Complete generated population addressability, 20 rows per page; not a real catalog or distance-sorted list. Inspect works in either mode; directory travel is Explorer-only. v5 stellar counts cover supported MS proxies.</p>
     </section>
     <section class="section" id="inspect">
      <pre id="inspectText"></pre>
@@ -163,7 +174,7 @@
       <button id="enterSystem">Explorer enter system</button>
       <button id="toFlight">Player Flight tab</button>
      </div>
-     <h2>SELECTED PLANET SANDBOX ORBIT</h2>
+     <h2>SELECTED PLANET SANDBOX ORBIT · NOT PLAYER</h2>
      <p id="editInfo"></p>
      <div class="box">
       <div class="row">
@@ -195,6 +206,7 @@
      <pre id="impulsePreview"></pre>
      <p class="status" id="editStatus"></p>
      <pre id="history"></pre>
+     <p class="fine">Planet editing retains its prior bound-ellipse limits. This release extends the PLAYER propagator, not planetary escape/evolution.</p>
     </section>
     <section class="section" id="bookmarks">
      <div id="books"></div>
@@ -210,9 +222,16 @@
      </div>
      <textarea id="worldJSON"></textarea>
      <p class="status" id="worldStatus"></p>
+     <p class="fine">World backups contain planetary edits, not the player. Back up the player separately.</p>
     </section>
     <section class="section" id="models">
      <pre id="modelText"></pre>
+     <h2>PROPAGATION AND PREDICTION</h2>
+     <p>Player motion uses nondimensionalized universal variables, Stumpff functions and a bracketed Newton/bisection root solve. It propagates Cartesian position/velocity without selecting separate elliptic/hyperbolic formulas. Planet motion remains the prior basis-vector bound Kepler model. Signed player energy is not clamped at the escape boundary.</p>
+     <h2>JOURNAL AND CHECKPOINT MIGRATION</h2>
+     <p>New player v2 records a Cartesian initialization seed, ordered applied maneuvers with RTN/inertial Δv and before/after states, and a shared-clock checkpoint.</p>
+     <h2>RETAINED LIMITS</h2>
+     <p>v4 legacy and v5 planar/spatial sessions retain their IDs and namespaces.</p>
     </section>
     <p class="status" id="panelStatus"></p>
    </article>
