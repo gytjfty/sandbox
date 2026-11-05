@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>Atlas / Complete Stellar Flight</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+ </head>
+ <body>
+  <div class="hud" id="top">
+   <b>ATLAS / COMPLETE STELLAR FLIGHT</b><br/>
+   <span id="presetHUD"></span><br/>
+   <span id="flightHUD"></span>
+  </div>
+  <div class="hud" id="stats"></div>
+  <div class="hud" id="prox"></div>
+  <div class="hud" id="cross">+</div>
+  <div class="mark" id="prograde">·</div>
+  <div class="mark" id="targetMark"></div>
+  <div id="tests"></div>
+  <div class="hud" id="help"></div>
+  <div class="hud" id="msg"></div>
+  <div id="gate">
+   <article>
+    <h1>ATLAS / BOUND ORBITS, FLYBYS & ESCAPE</h1>
+    <div class="box">
+     <div class="row">
+      <select id="presetSelect">
+       <option value="v5-spatial">v5 · Populations / spatial fork</option>
+       <option value="v5-planar">v5 · Populations / preserved planar</option>
+       <option value="v4-planar">v4 · Legacy / preserved planar</option>
+      </select>
+      <button id="switchPreset">Save active mode + switch</button>
+     </div>
+     <p class="status" id="presetStatus"></p>
+    </div>
+    <p>The physical player now uses a universal-variable state propagator for bound, near-parabolic and unbound stellar trajectories. Passing escape energy no longer rejects an otherwise supported velocity change.</p>
+    <div class="box">
+     <p>NEW: Local Gravity tab adds a separate numerical player mode pulled by the system's star and planets.</p>
+     <button id="openGravityMenu">Local Gravity setup</button>
+    </div>
+    <button class="primary" id="enter">Initializing…</button>
+    <div class="row">
+     <button id="openPanel">I · Player Flight / directory / orbital lab</button>
+    </div>
+    <p class="fine" id="error">Internet required for Three.js. NULL needs Blob workers, pointer lock and local storage.</p>
+   </article>
+  </div>
+  <div id="panel">
+   <article>
+    <h1>DIRECTORY / STELLAR FLIGHT / ORBITAL LAB</h1>
+    <div class="row">
+     <button class="primary" id="resume">Resume view</button>
+     <button id="panelClose">Menu / sessions</button>
+     <button id="clock">Pause clock</button>
+     <button id="saveAll">Save active mode + world</button>
+    </div>
+    <div class="row">
+     <button class="tab active" data-tab="browse">Objects</button>
+     <button class="tab" data-tab="flight">Player Flight</button>
+     <button class="tab" data-tab="gravity">Local Gravity</button>
+     <button class="tab" data-tab="inspect">Object inspector / edits</button>
+     <button class="tab" data-tab="bookmarks">Bookmarks / IDs</button>
+     <button class="tab" data-tab="world">World backup</button>
+     <button class="tab" data-tab="models">Models / migration</button>
+    </div>
+    <section class="section" id="gravity">
+     <h2>LOCAL GRAVITY / STAR + PLANETS</h2>
+     <div class="box">
+      <pre id="gravityInfo"></pre>
+      <div class="row">
+       <label>Drop altitude [m]<input id="gravityAltitude" max="1000000000" min="10" type="number" value="1000"/></label>
+       <label>Manual acceleration [m/s²]<input id="gravityThrust" max="1000" min="0.01" type="number" value="20"/></label>
+      </div>
+      <div class="row">
+       <button id="gravityDrop">Place above selected planet</button>
+       <button id="gravityOrbit">Demo orbit around selected planet</button>
+       <button id="gravityCurrent">Use Explorer current state</button>
+       <button id="gravityLeave">Return to Explorer</button>
+      </div>
+     </div>
+     <div class="row"><button id="gravitySetThrust">Set manual acceleration</button></div>
+     <h2>INDEPENDENT LOCAL-GRAVITY CHECKPOINT</h2>
+     <div class="row">
+      <button id="gravitySave">Save local gravity + world</button>
+      <button id="gravityRestore">Restore gravity + shared clock</button>
+      <button id="gravityExport">Export saved gravity JSON</button>
+      <button id="gravityImport">Verify + restore gravity JSON</button>
+     </div>
+     <textarea id="gravityJSON" placeholder="local-gravity-player-v1 checkpoint"></textarea>
+     <p class="status" id="gravityStatus"></p>
+    </section>
+    <section class="section" id="flight">
+     <pre id="playerText"></pre>
+     <div class="box">
+      <p id="flightTarget"></p>
+      <div class="row">
+       <label>Demo circular radius [AU]<input id="demoA" max="10000" min="0.005" step="0.1" type="number" value="1"/></label>
+       <label>Open-path prediction span [days]<input id="predictionDays" max="1000000" min="0.001" step="10" type="number" value="100"/></label>
+      </div>
+      <div class="row">
+       <button class="primary" id="demoFlight">Initialize demonstration orbit</button>
+       <button id="currentFlight">Use current position + velocity</button>
+       <button id="liveFlight">Resume live player now</button>
+       <button id="leaveFlight">Return to Explorer</button>
+       <button id="setPrediction">Set prediction span</button>
+      </div>
+     </div>
+     <h2>PLAYER IDEAL RTN VELOCITY CHANGE</h2>
+     <div class="box">
+      <div class="row">
+       <label>Radial Δv [m/s]<input id="playerR" step="1" type="number" value="0"/></label>
+       <label>Transverse Δv [m/s]<input id="playerT" step="1" type="number" value="1000"/></label>
+       <label>Normal Δv [m/s]<input id="playerN" step="1" type="number" value="0"/></label>
+       <label>Keyboard pulse size [m/s]<input id="pulseSize" max="1000000" min="0.01" step="1" type="number" value="10"/></label>
+      </div>
+      <div class="row">
+       <button id="previewPlayer">Preview player pulse</button>
+       <button id="applyPlayer">Apply player pulse</button>
+       <button id="setPulse">Set keyboard pulse size</button>
+      </div>
+      <pre id="playerPreview"></pre>
+     </div>
+     <h2>PLAYER MANEUVER JOURNAL</h2>
+     <pre id="maneuverLog"></pre>
+     <h2>INDEPENDENT PLAYER CHECKPOINT</h2>
+     <div class="row">
+      <button id="savePlayer">Save physical checkpoint v2</button>
+      <button id="restorePlayer">Restore saved player + clock</button>
+      <button id="exportPlayer">Export last saved player JSON</button>
+      <button id="importPlayer">Verify JSON + restore</button>
+     </div>
+     <textarea id="playerJSON" placeholder="Player checkpoint JSON"></textarea>
+     <p class="status" id="flightStatus"></p>
+    </section>
+    <section class="section active" id="browse">
+     <div class="row">
+      <button id="rootBrowse">All galaxies</button>
+      <button id="currentBrowse">Current region</button>
+      <button id="parentBrowse">Browse parent</button>
+      <button id="selectedChildren">Browse selected contents</button>
+     </div>
+     <p id="scopeLabel"></p>
+     <div class="row">
+      <button id="prevPage">Previous</button>
+      <input aria-label="Page number" class="small" id="pageIndex" min="1" step="1" type="number" value="1"/>
+      <button id="goPage">Go to page</button>
+      <button id="nextPage">Next</button>
+      <input class="small" id="ordinal" min="1" placeholder="Object #" step="1" type="number"/>
+      <button id="goOrdinal">Locate object #</button>
+     </div>
+     <p class="status" id="listStatus"></p>
+     <div id="objectRows"></div>
+    </section>
+    <section class="section" id="inspect">
+     <pre id="inspectText"></pre>
+     <div class="row">
+      <button id="cycle">Next body · M</button>
+      <button id="copyID">Copy ID</button>
+      <button id="exportTarget">Export target</button>
+      <button id="bookmark">Bookmark</button>
+      <button id="approach">Explorer approach</button>
+      <button id="enterSystem">Explorer enter system</button>
+      <button id="toFlight">Player Flight tab</button>
+     </div>
+     <h2>SELECTED PLANET SANDBOX ORBIT</h2>
+     <p id="editInfo"></p>
+     <div class="box">
+      <div class="row">
+       <label>a [AU]<input id="orbitA" max="10000" min="0.005" step="0.001" type="number"/></label>
+       <label>e<input id="orbitE" max="0.998999" min="0" step="0.01" type="number"/></label>
+       <label>Inclination [°]<input id="orbitI" max="180" min="0" step="1" type="number"/></label>
+      </div>
+      <div class="row">
+       <label>Node Ω [°]<input id="orbitNode" step="1" type="number"/></label>
+       <label>Periapsis ω [°]<input id="orbitArg" step="1" type="number"/></label>
+       <label>Mean anomaly [°]<input id="orbitM" step="1" type="number"/></label>
+      </div>
+      <div class="row">
+       <button id="fillOrbit">Read elements</button>
+       <button id="applyOrbit">Set planetary orbit</button>
+       <button id="resetOrbit">Restore baseline from now</button>
+       <button id="undoOrbit">Undo latest planet event</button>
+      </div>
+     </div>
+     <div class="row">
+      <label>Planet radial Δv<input id="radialDV" type="number" value="0"/></label>
+      <label>Planet transverse Δv<input id="transverseDV" type="number" value="0"/></label>
+      <label>Planet normal Δv<input id="normalDV" type="number" value="1000"/></label>
+     </div>
+     <div class="row">
+      <button id="previewImpulse">Preview planet Δv</button>
+      <button id="applyImpulse">Apply planet Δv</button>
+     </div>
+     <pre id="impulsePreview"></pre>
+     <p class="status" id="editStatus"></p>
+     <pre id="history"></pre>
+    </section>
+    <section class="section" id="bookmarks">
+     <div id="books"></div>
+     <input id="address" placeholder="Complete generated object ID"/>
+     <button id="resolveID">Resolve in active layout</button>
+     <textarea id="portable" placeholder="Portable target JSON"></textarea>
+     <button id="loadTarget">Verify target</button>
+    </section>
+    <section class="section" id="world">
+     <div class="row">
+      <button id="exportWorld">Export world JSON</button>
+      <button id="importWorld">Verify + import world</button>
+     </div>
+     <textarea id="worldJSON"></textarea>
+     <p class="status" id="worldStatus"></p>
+    </section>
+    <section class="section" id="models">
+     <pre id="modelText"></pre>
+    </section>
+    <p class="status" id="panelStatus"></p>
+   </article>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+ </body>
+</html>
