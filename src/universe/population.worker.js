@@ -64,17 +64,23 @@ function density(p, r, kind, profile){
   return .02+Math.exp(-Math.min(a*a+b*b, b*b+c*c, a*a+c*c)*12)*5
 }
 function valid(n, r){
-  for(let i=0;i<80;i++){
+  for(let i=0;
+  i<80;
+  i++){
     let p=n.c.map(x=>x+(r()*2-1)*n.h);
     if(inside(p, n.r))return p
   }let q=n.c.map(x=>Math.sign(x)*Math.max(0, Math.abs(x)-n.h));
-  for(let i=0;i<50;i++){
+  for(let i=0;
+  i<50;
+  i++){
     let f=.5**(i+2), p=q.map((x, k)=>x+(n.c[k]-x)*f);
     if(inside(p, n.r))return p
   }return q
 }function rep(n, kind, salt='rep'){
   let r=rng(n.id+'/'+salt), best=null, w=-1;
-  for(let j=0;j<7;j++){
+  for(let j=0;
+  j<7;
+  j++){
     let p=valid(n, r), v=density(p, n.r, kind, n.profile)*(.5+r());
     if(v>w){
       best=p;
@@ -89,11 +95,15 @@ function split(n, kind){
     cache.set(n.id, a);
     return a
   }let r=rng(n.id), h=n.h/2, a=[];
-  for(let i=0;i<8;i++){
+  for(let i=0;
+  i<8;
+  i++){
     let c=[n.c[0]+(i&1?h:-h), n.c[1]+(i&2?h:-h), n.c[2]+(i&4?h:-h)];
     if(Math.hypot(...c.map(x=>Math.max(0, Math.abs(x)-h)))>=n.r)continue;
     let s=0;
-    for(let j=0;j<12;j++){
+    for(let j=0;
+    j<12;
+    j++){
       let p=c.map(x=>x+(r()*2-1)*h);
       if(inside(p, n.r))s+=density(p, n.r, kind, n.profile)
     }a.push({
@@ -105,7 +115,9 @@ function split(n, kind){
   }let sum=a.reduce((s, c)=>s+c.w, 0);
   for(let c of a)c.count=Math.floor(n.count*c.w/sum);
   let rem=n.count-a.reduce((s, c)=>s+c.count, 0), order=a.slice().sort((a, b)=>(n.count*b.w/sum-b.count)-(n.count*a.w/sum-a.count));
-  for(let i=0;i<rem;i++)order[i%order.length].count++;
+  for(let i=0;
+  i<rem;
+  i++)order[i%order.length].count++;
   let out=a.filter(c=>c.count);
   if(out.reduce((s, c)=>s+c.count, 0)!==n.count)throw Error('Count conservation');
   cache.set(n.id, out);
@@ -116,7 +128,9 @@ function split(n, kind){
 }
 function objects(n, kind, g){
   let a=[];
-  for(let i=0;i<n.count;i++){
+  for(let i=0;
+  i<n.count;
+  i++){
     let id=n.id+'#'+i, r=rng(id), p=rep(n, kind, 'body'+i);
     if(kind==='universe')a.push(isNew(id)?galaxyProperties(id, p):{
       id, name:'Galaxy '+id.slice(-15), kind:'galaxy', p, radius:(12000+r()*65000)*LY, stars:100000000000
@@ -192,7 +206,9 @@ function exclude(n, kind, id, g){
 function planets(star){
   let r=rng(star.id+'/planets'), a=.25*AU, out=[];
   if(!isNew(star.id)){
-    for(let i=0;i<6;i++){
+    for(let i=0;
+    i<6;
+    i++){
       a*=1.5+r()*.4;
       out.push({
         id:star.id+'/p'+i, name:'Planet '+(i+1), kind:'planet', radius:(i>3?20000+r()*40000:3000+r()*5500)*1000, a, phase:r()*6.28, color:[0x7399ad, 0xc2a778, 0x6a957b, 0xb57a63][i%4]
@@ -200,7 +216,9 @@ function planets(star){
     }return out.map(withPlanetGravity)
   }let occurrence=.25+.5*Math.min(1, star.metallicity/.02), count=r()>occurrence?0:1+Math.floor(r()*8);
   a=Math.max(.03*AU, star.radius*5, Math.sqrt(star.luminositySolar)*.1*AU);
-  for(let i=0;i<count;i++){
+  for(let i=0;
+  i<count;
+  i++){
     a*=1.6+r()*.6;
     let giant=r()<.25, radius=(giant?20000+r()*50000:2000+r()*8000)*1000;
     out.push({
@@ -244,7 +262,8 @@ function resolveAddress(id){
   }
 }
 function test(){
-  let out={};
+  let out={
+  };
   for(let ver of[LEGACY, NEW]){
     let root=rootNode(ver, R, 2000000000000), ch=split(root, 'universe'), g=byRank(root, 'universe', 12345), s=byRank(galaxyRoot(g), 'galaxy', 123, g);
     out[ver+' count']=ch.reduce((n, c)=>n+c.count, 0)===root.count;
@@ -263,7 +282,9 @@ onmessage=e=>{
       let f=[m.root];
       while(f.length<m.budget-7){
         let idx=-1, best=-1;
-        for(let i=0;i<f.length;i++){
+        for(let i=0;
+        i<f.length;
+        i++){
           let n=f[i];
           if(leaf(n))continue;
           let d=Math.hypot(...n.c.map((v, k)=>v-m.position[k])), score=n.h/Math.max(n.h*.15, d);
@@ -285,7 +306,9 @@ onmessage=e=>{
     else if(m.type==='rank')result=byRank(m.root, m.kind, m.rank, g);
     else if(m.type==='page'){
       let start=Math.max(0, Math.min(m.root.count-1, Math.floor(m.start))), items=[];
-      for(let i=start;i<Math.min(m.root.count, start+Math.min(50, m.size||20));i++)items.push({
+      for(let i=start;
+      i<Math.min(m.root.count, start+Math.min(50, m.size||20));
+      i++)items.push({
         index:i, body:byRank(m.root, m.kind, i, g)
       });
       result={

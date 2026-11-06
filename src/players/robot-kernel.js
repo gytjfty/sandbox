@@ -1,3 +1,4 @@
+'use strict';
 const R=6371000,M=5.9722e24,G=6.67430e-11,S=1.98847e30,AU=149597870700;
 const add=(a,b)=>a.map((x,i)=>x+b[i]),sub=(a,b)=>a.map((x,i)=>x-b[i]),mul=(a,k)=>a.map(x=>x*k),dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0),len=a=>Math.hypot(...a);
 const unit=a=>{const n=len(a);if(!(n>0))throw Error('Invalid direction');return mul(a,1/n)};
@@ -27,5 +28,6 @@ function step(input,dt,t,c){
  }
  return s;
 }
-
-export const AtlasRobotKernel=Object.freeze({R,M,S,AU,add,sub,mul,dot,len,unit,cross,height,radius,distance,normal,basis,viewBasis,orbit,gravity,spawn,step});
+const AtlasRobotKernel=Object.freeze({R,M,S,AU,add,sub,mul,dot,len,unit,cross,height,radius,distance,normal,basis,viewBasis,orbit,gravity,spawn,step});
+export { AtlasRobotKernel };
+export default AtlasRobotKernel;

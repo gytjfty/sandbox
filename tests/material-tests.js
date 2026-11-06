@@ -1,0 +1,60 @@
+import AtlasMaterialFoundation from '../src/materials/foundation.js';
+
+
+'use strict';
+export function AtlasMaterialFoundationTests(){
+ const A=AtlasMaterialFoundation,results=[];
+ const ok=(name,fn)=>{try{if(fn()===false)throw Error('Assertion returned false');results.push({name,pass:true});}catch(e){results.push({name,pass:false,error:e.message});}};
+ const throws=fn=>{try{fn();return false}catch(e){return true}};
+ const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const box={kind:'box',centerM:[0,0,0],rotation:A.identity(),sizeM:[2,3,4]};
+ const fixture=()=>{
+  const w=A.newWorld('mw-contract-test-0001');
+  w.containers.source={id:'source',capacityUnits:20000000};w.containers.buffer={id:'buffer',capacityUnits:20000000};
+  w.batches.stone={id:'stone',materialId:'dev-silica-stone-v1',containerId:'source',massUnits:10000000,reservedUnits:0,state:{phase:'solid',temperatureK:null}};
+  w.audit.introducedUnits=10000000;return w;
+ };
+ ok('fresh world contract',()=>A.validWorld(A.newWorld('mw-contract-test-0001')));
+ ok('reject legacy checkpoint',()=>throws(()=>A.validWorld({version:1,model:'circular-orbit-edits-v1'})));
+ ok('reject legacy world namespace',()=>throws(()=>A.newWorld('atlas-populations-v5')));
+ ok('integer mass quantum',()=>A.massUnits(.000001)===1);
+ ok('reject sub-quantum mass',()=>throws(()=>A.massUnits(.0000001)));
+ ok('reject negative mass',()=>throws(()=>A.massUnits(-1)));
+ ok('reject nonfinite mass',()=>throws(()=>A.massUnits(Infinity)));
+ ok('primitive analytic volume',()=>A.analyticVolume(box).volumeM3===24);
+ ok('solid occupancy inside/outside',()=>A.contains(box,[0,0,0])&&!A.contains(box,[2,0,0]));
+ const sphere={kind:'sphere',centerM:[0,0,0],rotation:A.identity(),radiusM:.5};
+ const cut={op:'subtract',children:[box,sphere]};
+ ok('CSG subtraction occupancy',()=>!A.contains(cut,[0,0,0])&&A.contains(cut,[.9,0,0]));
+ ok('overlap volume not fabricated',()=>A.analyticVolume(cut).volumeM3===null);
+ ok('minimum feature size',()=>throws(()=>A.validateSolid({...sphere,radiusM:.001})));
+ ok('complexity budget',()=>throws(()=>A.validateSolid({op:'union',children:Array(33).fill(box)})));
+ ok('known absent element differs from unknown',()=>A.elementInspection('dev-silica-stone-v1',1,'Fe').massKg===0);
+ ok('composition inspection supports moles',()=>A.elementInspection('dev-silica-stone-v1',1,'Si').moles>0);
+ const f={originM:[1000,-30,20],velocityMps:[30000,2,0],rotation:[0,-1,0,1,0,0,0,0,1],rotationEnabled:false};
+ const state={positionM:[3,4,5],velocityMps:[1,2,3]};
+ ok('frame position and velocity roundtrip',()=>same(A.fromParent(f,A.toParent(f,state)),state));
+ ok('spawn inherits planet translation',()=>same(A.toParent(f,{positionM:[0,0,0],velocityMps:[0,0,0]}).velocityMps,f.velocityMps));
+ ok('rebase preserves velocity',()=>same(A.rebase(state,[100,0,0],[200,0,0]).velocityMps,state.velocityMps));
+ ok('rebase preserves physical position',()=>A.rebase(state,[100,0,0],[200,0,0]).positionM[0]+200===103);
+ ok('reject unimplemented rotation',()=>throws(()=>A.toParent({...f,rotationEnabled:true},state)));
+ ok('reject reflection frame',()=>throws(()=>A.toParent({...f,rotation:[-1,0,0,0,1,0,0,0,1]},state)));
+ ok('conservative material transfer',()=>{const r=A.transfer(fixture(),'transfer-1','stone','buffer',3,'output');return r.world.batches.stone.massUnits===7000000&&r.world.batches.output.massUnits===3000000;});
+ ok('transfer leaves input unchanged',()=>{const w=fixture(),raw=JSON.stringify(w);A.transfer(w,'transfer-1','stone','buffer',3,'output');return raw===JSON.stringify(w);});
+ ok('idempotent replay cannot duplicate',()=>{const r=A.transfer(fixture(),'transfer-1','stone','buffer',3,'output');const t=A.transfer(r.world,'transfer-1','stone','buffer',3,'output');return t.replayed&&same(t.world,r.world);});
+ ok('reject reused operation ID',()=>{const r=A.transfer(fixture(),'transfer-1','stone','buffer',3,'output');return throws(()=>A.transfer(r.world,'transfer-1','stone','buffer',4,'output'));});
+ ok('reject duplicate batch ID',()=>throws(()=>A.transfer(fixture(),'transfer-1','stone','buffer',3,'stone')));
+ ok('insufficient material rolls back',()=>{const w=fixture(),raw=JSON.stringify(w);return throws(()=>A.transfer(w,'x','stone','buffer',11,'output'))&&raw===JSON.stringify(w);});
+ ok('container overflow rolls back',()=>{const w=fixture();w.containers.buffer.capacityUnits=1000000;return throws(()=>A.transfer(w,'x','stone','buffer',3,'output'));});
+ ok('detect conservation violation',()=>{const w=fixture();w.batches.stone.massUnits++;return throws(()=>A.validWorld(w));});
+ ok('snapshot roundtrip',()=>{const w=fixture();return same(A.restore(JSON.parse(JSON.stringify(A.snapshot(w)))),w);});
+ ok('mismatched manifest rejected',()=>{const e=A.snapshot(fixture());e.manifest.timeS++;return throws(()=>A.restore(e));});
+ ok('dangling geometry reference rejected',()=>{const w=fixture();w.bodies.x={solidId:'missing'};return throws(()=>A.validWorld(w));});
+ ok('reservation protected from transfer',()=>{
+  const w=fixture();w.solids.shape={definition:box};w.blueprints.plan={version:1,solidId:'shape',materialIds:['dev-silica-stone-v1']};w.workOrders.order={blueprintId:'plan',stage:'validated',reservations:[]};
+  const r=A.reserve(w,'reserve-1','order','stone',8);return throws(()=>A.transfer(r.world,'x','stone','buffer',3,'output'))&&r.world.batches.stone.reservedUnits===8000000;
+ });
+ ok('dangling reservation rejected',()=>{const w=fixture();w.batches.stone.reservedUnits=1;return throws(()=>A.validWorld(w));});
+ ok('transaction mutation failure leaves input intact',()=>{const w=fixture(),raw=JSON.stringify(w);return throws(()=>A.transact(w,'failure',{},n=>{n.batches.stone.massUnits=0;throw Error('interrupted');}))&&raw===JSON.stringify(w);});
+ return {suite:'atlas-material-contracts-v1',passed:results.filter(x=>x.pass).length,total:results.length,results};
+};
