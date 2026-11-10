@@ -1,0 +1,28 @@
+{
+  "syntaxChecks": [
+    "main.js",
+    "graphics-context.js",
+    "material.js",
+    "physics.js",
+    "world-worker.js"
+  ],
+  "startup": {
+    "startupChecks": 24,
+    "realBrowserContextTested": false,
+    "mockFallbacksTested": true
+  },
+  "core": {
+    "coreChecks": 61,
+    "towerTopAfter": [
+      34.107990417255756,
+      2.0002,
+      0
+    ],
+    "towerUnits": 192,
+    "browserTested": false
+  },
+  "totalAssertions": 85,
+  "realBrowserTested": false,
+  "realGPUContextTested": false,
+  "indexedDBRuntimeTested": false
+}
