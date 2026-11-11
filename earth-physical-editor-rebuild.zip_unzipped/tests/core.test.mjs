@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {sphereUnits,validateWorld} from '../material.js';
+import {R,solidAt,field,measureChange,buildTree,terrainRay,sphereRay} from '../terrain.js';
+import {stepPhysics} from '../physics.js';
+let assertions=0;const eq=(a,b)=>{assert.deepEqual(a,b);assertions++;},ok=x=>{assert.ok(x);assertions++;},throws=f=>{assert.throws(f);assertions++;};
+function bruteSphere(r){let n=0;for(let x=Math.floor(-r);x<Math.ceil(r);x++)for(let y=Math.floor(-r);y<Math.ceil(r);y++)for(let z=Math.floor(-r);z<Math.ceil(r);z++)if((x+.5)**2+(y+.5)**2+(z+.5)**2<=r*r)n++;return n;}
+for(let r=1;r<=12;r+=.25)eq(sphereUnits(r),bruteSphere(r));
+for(const r of [NaN,0,13,Infinity,-1])throws(()=>sphereUnits(r));
+let seed=12345;const random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296;};
+function bruteChange(e,ops){let n=0;for(let x=Math.floor(e.x-e.r);x<Math.ceil(e.x+e.r);x++)for(let y=Math.floor(e.y-e.r);y<Math.ceil(e.y+e.r);y++)for(let z=Math.floor(e.z-e.r);z<Math.ceil(e.z+e.r);z++){const p=[x+.5,y+.5,z+.5];if((!e.clipToPlanet||p.reduce((s,v)=>s+v*v,0)<=R*R)&&(p[0]-e.x)**2+(p[1]-e.y)**2+(p[2]-e.z)**2<=e.r*e.r&&solidAt(p,ops)===(e.kind==='cut'))n++;}return n;}
+const ops=[];let inventory=0;for(let i=0;i<120;i++){const e={x:random()*12-6,y:R+random()*10-6,z:random()*12-6,r:1+random()*3,kind:i%4?'cut':'fill',...(i%8===0?{clipToPlanet:true}:{})};let n=bruteChange(e,ops);if(e.kind==='fill'&&n>inventory)continue;eq(measureChange(e,ops),n);inventory+=e.kind==='cut'?n:-n;ops.push({...e,units:n});eq(measureChange(e,ops),0);}
+const tree=buildTree(ops);eq(tree.length/12,ops.length*2-1);for(let n=0;n<tree.length/12;n++){ok(tree[n*12+3]>n&&tree[n*12+3]<=tree.length/12);if(tree[n*12+7]>.5){const idx=Math.round(tree[n*12+7])-1;eq(Math.abs(tree[n*12+11]),ops[idx].r);}}
+for(let i=0;i<200;i++){const p=[random()*14-7,R+random()*12-6,random()*14-7];eq(field(p,ops)<=0,solidAt(p,ops));}
+const clipped=[{x:0,y:R,z:0,r:5,kind:'fill',clipToPlanet:true,units:0}];eq(solidAt([0,R+2,0],clipped),false);eq(solidAt([0,R-2,0],clipped),true);
+const c={x:0,y:R,z:0,r:3,kind:'cut'};ok(Math.abs(terrainRay([0,R+10,0],[0,-1,0],[c])-13)<.00001);eq(terrainRay([0,R+10,0],[0,1,0],[c]),null);eq(sphereRay([0,0,0],[1,0,0],[5,0,0],2),3);
+const w={format:'earth-editor-v1',cellSize:1,density:2700,baselineCount:0,inventoryUnits:inventory,ops,bodies:[]};validateWorld(w);assertions++;
+const u=sphereUnits(2),rich={...w,inventoryUnits:1000,ops:[{x:0,y:R,z:0,r:10,kind:'cut',units:1000}],bodies:[]};const b={id:'a',p:[0,R+10,0],r:2,units:u,v:[0,0,0],w:[0,0,0]};rich.inventoryUnits-=u;rich.bodies.push(b);validateWorld(rich);assertions++;b.p[0]+=100;validateWorld(rich);assertions++;throws(()=>validateWorld({...rich,bodies:[b,b]}));throws(()=>validateWorld({...rich,inventoryUnits:rich.inventoryUnits+1}));const bad=structuredClone(rich);bad.bodies[0].r=3;throws(()=>validateWorld(bad));const recovered=structuredClone(rich);recovered.inventoryUnits+=recovered.bodies.pop().units;validateWorld(recovered);eq(recovered.inventoryUnits,1000);
+const falling={id:'f',p:[0,10,0],r:1,units:sphereUnits(1),v:[0,0,0],w:[0,0,0]};for(let i=0;i<60;i++)stepPhysics([falling],p=>p[1],1/60,null,()=>[0,-9.81,0]);ok(falling.p[1]<5.2&&falling.p[1]>4.8);for(let i=0;i<600;i++)stepPhysics([falling],p=>p[1],1/60,null,()=>[0,-9.81,0]);ok(Math.abs(falling.p[1]-1)<.01);eq(falling.units,sphereUnits(1));
+const pair=[{id:'p',p:[-1.01,10,0],r:1,units:8,v:[1,0,0],w:[0,0,0]},{id:'q',p:[1.01,10,0],r:1,units:8,v:[-1,0,0],w:[0,0,0]}];for(let i=0;i<60;i++)stepPhysics(pair,()=>100,1/60,null,()=>[0,0,0]);ok(Math.abs(pair[0].v[0]+pair[1].v[0])<1e-9);ok(pair[1].p[0]-pair[0].p[0]>=1.999);
+const main=fs.readFileSync(new URL('../main.js',import.meta.url),'utf8'),renderer=fs.readFileSync(new URL('../renderer.js',import.meta.url),'utf8'),worker=fs.readFileSync(new URL('../simulation-worker.js',import.meta.url),'utf8'),frag=fs.readFileSync(new URL('../terrain.frag',import.meta.url),'utf8');ok(!main.includes('stepPhysics('));ok(worker.includes('stepPhysics(world.bodies'));ok(!worker.includes('requestAnimationFrame'));ok(!renderer.includes("send('pause')"));ok(frag.includes('if(fillCount==0)'));ok(!frag.includes('512'));ok(!frag.includes('checker'));ok(main.includes('requestAnimationFrame(frame);if'));ok(worker.includes("earth-physical-editor-v1"));ok(worker.includes("'earth-rock-building-v1'"));
+console.log(JSON.stringify({suite:'core',assertions,passed:true,randomTerrainOperations:ops.length,physicsSteps:780},null,2));

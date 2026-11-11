@@ -1,0 +1,17 @@
+Source baseline inspected from gytjfty/sandbox:
+https://github.com/gytjfty/sandbox
+Working reference: earth-unrestricted-building-complete.zip_unzipped/main.js and terrain.frag.
+Feature reference: earth-material-editor-physics-complete.zip_unzipped/main.js, index.html, README.txt, world-worker.js, physics.js, material.js and terrain.frag.
+Repository commit cfcc28033384ffae9097aba8c5dd67f4d6c295ea explicitly describes unrestricted-building as working before editor-physics and onward broke.
+Source blob SHAs previously retrieved:
+working main.js d07e2328e7d9a2c790a098d7d5153fdd3f97e3dd
+working terrain.frag 3e1aff3d3efc7fca0b3f0dc1d25d1c02f033b05e
+editor main.js a0d8cc3dca7a4c91e8988c64168bc31499fc697a
+editor terrain.frag 1908faba2684727e4af8f87a8ac2930dd5aad58f
+editor world-worker.js 468586022c973071e46c2b0019bbedccf5ae0e58
+editor physics.js 4241b00ee46668b8cccfec44248ca18baba58be4
+editor material.js 2b469b8e2566f8e8f4ca179d1b616af2f7cf29e0
+editor index.html 48bc749abdac9ef8edc13125aa38c46df93fe3c2
+editor README.txt 2d8d5793f00b1874da9e55bf977d62d05853e1b4
+This package rewrites orchestration/UI/rendering and extracts shared terrain functions. It is not an untouched repack of either archive. The limited sphere solver and material ledger are intentionally retained. No repository files were changed by producing this ZIP.
+Source lookups in this response: terrain worker [github_mcp_direct:0]; editor page [github_mcp_direct:1]; editor README [github_mcp_direct:2].
