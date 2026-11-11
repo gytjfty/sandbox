@@ -1,0 +1,104 @@
+import { CONFIG } from './config.js';
+import { COMMAND } from './protocol.js';
+import { add, sub, scale, dot } from './physics.js';
+import { sphereRay } from './terrain.js';
+import { sphereUnits } from './material.js';
+import { project, screenRay } from './view-math.js';
+const $ = selector => document.querySelector(selector);
+export class EditorUI {
+  constructor(model, context) {
+    this.model = model; this.context = context; this.drag = null;
+    this.bind();
+  }
+  safely(action) {
+    try { action(); } catch (error) { this.context.note(error.message); }
+    this.render();
+  }
+  render() {
+    const state = this.context.state(); if (!state) return;
+    const model = this.model, part = model.parts[model.selected];
+    $('#panel').style.display = model.open ? 'block' : 'none';
+    $('#cost').textContent = `Design ${model.cost} m³ · Stored ${state.inventory} m³ · Parts ${state.bodies.length}/${CONFIG.maxPhysicalParts}`;
+    $('#cost').style.color = model.cost > state.inventory ? '#ff8b7d' : '#b7efc4';
+    for (const [axis, key] of ['x', 'y', 'z'].entries()) {
+      const input = $('#' + key); input.disabled = !part;
+      if (part && document.activeElement !== input) input.value = Number(part.p[axis].toFixed(3));
+    }
+    $('#radius').disabled = !part;
+    if (part && document.activeElement !== $('#radius')) $('#radius').value = part.r;
+    $('#parts').replaceChildren();
+    model.parts.forEach((part, index) => {
+      const button = document.createElement('button');
+      button.textContent = `${index === model.selected ? '› ' : ''}Sphere ${index + 1} · ${sphereUnits(part.r)} m³`;
+      button.onclick = () => { model.selected = index; this.render(); };
+      $('#parts').append(button);
+    });
+    $('#build').disabled = !!state.busy;
+  }
+  selectAt(x, y) {
+    const player = this.context.player(); if (!player) return;
+    const direction = screenRay(x, y, player, this.context.forward(), innerWidth, innerHeight);
+    let best = Infinity, selected = -1;
+    this.model.parts.forEach((part, index) => {
+      const world = this.model.worldPart(part), distance = sphereRay(player.p, direction, world.p, world.r);
+      if (distance !== null && distance < best) { best = distance; selected = index; }
+    });
+    this.model.selected = selected; this.render();
+  }
+  project(position) { return project(position, this.context.player(), this.context.forward(), innerWidth, innerHeight); }
+  handles() {
+    const model = this.model, part = model.parts[model.selected];
+    for (const button of document.querySelectorAll('#handles button')) {
+      const axis = Number(button.dataset.axis);
+      const point = model.open && part ? this.project(add(model.worldPart(part).p, scale(model.basis[axis], part.r + 1.5))) : null;
+      button.style.display = point ? 'block' : 'none';
+      if (point) { button.style.left = point[0] + 'px'; button.style.top = point[1] + 'px'; }
+    }
+  }
+  bind() {
+    const model = this.model, context = this.context;
+    const actions = {
+      add: () => model.add(), duplicate: () => model.add(), delete: () => model.remove(),
+      undo: () => model.history(), redo: () => model.history(true),
+      tower: () => model.tower($('#towerCount').value),
+      build: () => { if (model.open) context.send(COMMAND.BUILD, { parts: model.parts.map(part => model.worldPart(part)) }); },
+      close: () => context.toggleEditor(), recover: () => context.send(COMMAND.RECOVER),
+      exportDesign: () => context.download(model.export(), 'rock-sphere-design.json'),
+      importDesign: () => $('#designFile').click(),
+    };
+    for (const [id, action] of Object.entries(actions)) $('#' + id).onclick = () => this.safely(action);
+    $('#designFile').onchange = async event => {
+      try {
+        const file = event.target.files[0]; if (!file) return;
+        if (file.size > CONFIG.maxDesignFileBytes) throw Error('Design exceeds 1 MB.');
+        model.import(JSON.parse(await file.text()));
+      } catch (error) { context.note(error.message); }
+      finally { event.target.value = ''; this.render(); }
+    };
+    for (const [axis, key] of ['x', 'y', 'z'].entries()) {
+      $('#' + key).onchange = event => this.safely(() => model.coordinate(axis, Number(event.target.value)));
+    }
+    $('#radius').onchange = event => this.safely(() => model.radius(Number(event.target.value)));
+    for (const button of document.querySelectorAll('#handles button')) {
+      button.onpointerdown = event => {
+        if (!model.open || model.selected < 0) return;
+        event.preventDefault();
+        const axis = Number(button.dataset.axis), centre = model.worldPart(model.parts[model.selected]).p;
+        const a = this.project(centre), b = this.project(add(centre, model.basis[axis]));
+        if (!a || !b) return;
+        const vector = sub(b, a), norm = dot(vector, vector); if (norm < 0.5) return;
+        model.remember();
+        this.drag = { axis, x: event.clientX, y: event.clientY, start: model.parts[model.selected].p[axis], vector, norm };
+        button.setPointerCapture(event.pointerId);
+      };
+      button.onpointermove = event => {
+        if (!this.drag || model.selected < 0) return;
+        const drag = this.drag;
+        const value = drag.start + dot([event.clientX - drag.x, event.clientY - drag.y], drag.vector) / drag.norm;
+        model.coordinate(drag.axis, Math.max(-CONFIG.maxLocalCoordinate, Math.min(CONFIG.maxLocalCoordinate, value)), false);
+        this.render();
+      };
+      button.onpointerup = button.onpointercancel = () => { this.drag = null; };
+    }
+  }
+}

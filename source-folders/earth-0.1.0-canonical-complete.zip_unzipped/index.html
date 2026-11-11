@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Earth — canonical physical editor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="view"></canvas>
+  <div id="aim">·</div>
+  <div id="bar">
+    <span id="stats">Starting simulation…</span><br>
+    <button id="backup">World backup</button>
+    <button id="restore">Restore graphics</button>
+    <button id="report">Diagnostics</button>
+  </div>
+  <div id="note"></div>
+  <div id="panel">
+    <h2>Rock editor</h2>
+    <div id="cost"></div>
+    <button id="add">Add sphere</button>
+    <button id="duplicate">Duplicate</button>
+    <button id="delete">Delete preview</button>
+    <button id="undo">Undo</button>
+    <button id="redo">Redo</button>
+    <hr>
+    <label>X <input id="x" type="number" step="0.25"></label>
+    <label>Y <input id="y" type="number" step="0.25"></label>
+    <label>Z <input id="z" type="number" step="0.25"></label>
+    <label>Radius <input id="radius" type="number" min="1" max="12" step="0.25"></label>
+    <div id="parts"></div>
+    <hr>
+    <label>Tower <input id="towerCount" type="number" min="2" max="32" value="6"></label>
+    <button id="tower">Replace draft with tower</button>
+    <button id="build">Build &amp; simulate</button>
+    <button id="close">Close draft</button>
+    <button id="recover">Recover aimed real part</button>
+    <hr>
+    <button id="exportDesign">Export design</button>
+    <button id="importDesign">Import design</button>
+    <input id="designFile" type="file" accept="application/json" hidden>
+    <p id="help">Free drafts; construction spends rock. Drag X/Y/Z handles or edit fields.
+      Click previews to select. Right-drag looks, WASD moves. Local Y is vertical.
+      Touching allowed, intersecting rejected. Parts are separate spheres, not welded.
+      Tab closes. P pauses body physics. B exports the world.</p>
+  </div>
+  <div id="handles">
+    <button data-axis="0" class="axis-x">X</button>
+    <button data-axis="1" class="axis-y">Y</button>
+    <button data-axis="2" class="axis-z">Z</button>
+  </div>
+  <div id="touch">
+    <button id="touchEditor">Editor</button>
+    <button id="touchDig">Hold dig</button>
+    <button id="touchRecover">Recover</button>
+    <button id="touchFly">Walk/Fly</button>
+    <button data-key="Space">Up/Jump</button>
+    <button data-key="KeyC">Down</button>
+    <button data-key="ShiftLeft">Boost</button>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

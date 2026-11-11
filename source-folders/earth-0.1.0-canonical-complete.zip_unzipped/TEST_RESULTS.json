@@ -1,0 +1,325 @@
+{
+  "version": "0.1.0-canonical",
+  "date": "2026-11-11",
+  "status": "CPU/mock-tested consolidation; on-device acceptance pending",
+  "syntaxChecks": [
+    {
+      "file": "accounting-worker.js",
+      "passed": true
+    },
+    {
+      "file": "config.js",
+      "passed": true
+    },
+    {
+      "file": "editor-ui.js",
+      "passed": true
+    },
+    {
+      "file": "editor.js",
+      "passed": true
+    },
+    {
+      "file": "input.js",
+      "passed": true
+    },
+    {
+      "file": "main.js",
+      "passed": true
+    },
+    {
+      "file": "material.js",
+      "passed": true
+    },
+    {
+      "file": "persistence.js",
+      "passed": true
+    },
+    {
+      "file": "physics.js",
+      "passed": true
+    },
+    {
+      "file": "protocol.js",
+      "passed": true
+    },
+    {
+      "file": "renderer.js",
+      "passed": true
+    },
+    {
+      "file": "simulation-worker.js",
+      "passed": true
+    },
+    {
+      "file": "terrain.js",
+      "passed": true
+    },
+    {
+      "file": "view-math.js",
+      "passed": true
+    },
+    {
+      "file": "tests/core.test.mjs",
+      "passed": true
+    },
+    {
+      "file": "tests/editor.test.mjs",
+      "passed": true
+    },
+    {
+      "file": "tests/migration.test.mjs",
+      "passed": true
+    },
+    {
+      "file": "tests/page.test.mjs",
+      "passed": true
+    },
+    {
+      "file": "tests/persistence.test.mjs",
+      "passed": true
+    },
+    {
+      "file": "tests/renderer.test.mjs",
+      "passed": true
+    },
+    {
+      "file": "tests/run.mjs",
+      "passed": true
+    },
+    {
+      "file": "tests/worker.test.mjs",
+      "passed": true
+    }
+  ],
+  "suiteResults": [
+    {
+      "suite": "core",
+      "assertions": 877,
+      "passed": true,
+      "randomTerrainOperations": 119,
+      "physicsSteps": 720
+    },
+    {
+      "suite": "worker-mocked-integration",
+      "assertions": 28,
+      "passed": true,
+      "simulatedSeconds": 1.0000000000000013,
+      "injectedStorageFailure": true,
+      "gpuCalls": 0
+    },
+    {
+      "suite": "legacy-migration",
+      "assertions": 9,
+      "passed": true,
+      "originalDatabaseUnmodified": true
+    },
+    {
+      "suite": "invalid-legacy-rejection",
+      "assertions": 3,
+      "passed": true,
+      "noReplacementRecord": true
+    },
+    {
+      "suite": "draft-model-and-mocked-ui",
+      "assertions": 33,
+      "passed": true,
+      "focusedFieldPreserved": true
+    },
+    {
+      "suite": "renderer-policy-mocked-webgl",
+      "assertions": 31,
+      "passed": true,
+      "resolutionCases": 6,
+      "realGPU": false,
+      "downscalingRemoved": true
+    },
+    {
+      "suite": "persistence-serialization-and-invalid-records",
+      "assertions": 10,
+      "passed": true
+    },
+    {
+      "suite": "page-bootstrap-mocked-dom-no-webgl",
+      "assertions": 14,
+      "passed": true,
+      "browser": false,
+      "renderingUnavailableButInputAndCommandsAlive": true
+    }
+  ],
+  "summary": {
+    "summary": true,
+    "passed": true,
+    "suiteRuns": 8,
+    "assertions": 1005
+  },
+  "localReferences": [
+    {
+      "file": "simulation-worker.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "simulation-worker.js",
+      "dependency": "./protocol.js"
+    },
+    {
+      "file": "simulation-worker.js",
+      "dependency": "./physics.js"
+    },
+    {
+      "file": "simulation-worker.js",
+      "dependency": "./terrain.js"
+    },
+    {
+      "file": "simulation-worker.js",
+      "dependency": "./material.js"
+    },
+    {
+      "file": "simulation-worker.js",
+      "dependency": "./persistence.js"
+    },
+    {
+      "file": "simulation-worker.js",
+      "dependency": "./accounting-worker.js"
+    },
+    {
+      "file": "editor-ui.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "editor-ui.js",
+      "dependency": "./protocol.js"
+    },
+    {
+      "file": "editor-ui.js",
+      "dependency": "./physics.js"
+    },
+    {
+      "file": "editor-ui.js",
+      "dependency": "./terrain.js"
+    },
+    {
+      "file": "editor-ui.js",
+      "dependency": "./material.js"
+    },
+    {
+      "file": "editor-ui.js",
+      "dependency": "./view-math.js"
+    },
+    {
+      "file": "renderer.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "renderer.js",
+      "dependency": "./physics.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./protocol.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./physics.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./renderer.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./editor.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./editor-ui.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./input.js"
+    },
+    {
+      "file": "main.js",
+      "dependency": "./simulation-worker.js"
+    },
+    {
+      "file": "editor.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "editor.js",
+      "dependency": "./physics.js"
+    },
+    {
+      "file": "editor.js",
+      "dependency": "./terrain.js"
+    },
+    {
+      "file": "editor.js",
+      "dependency": "./material.js"
+    },
+    {
+      "file": "physics.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "terrain.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "persistence.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "persistence.js",
+      "dependency": "./material.js"
+    },
+    {
+      "file": "material.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "view-math.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "view-math.js",
+      "dependency": "./physics.js"
+    },
+    {
+      "file": "input.js",
+      "dependency": "./config.js"
+    },
+    {
+      "file": "input.js",
+      "dependency": "./protocol.js"
+    },
+    {
+      "file": "input.js",
+      "dependency": "./view-math.js"
+    },
+    {
+      "file": "accounting-worker.js",
+      "dependency": "./terrain.js"
+    }
+  ],
+  "glslFormattingTokenEquivalenceToRepairListing": true,
+  "saveSchemaUnchanged": true,
+  "realBrowserTested": false,
+  "realGPUOrShaderExecutionTested": false,
+  "actualUserWorldTested": false,
+  "measured60FPS": false,
+  "notPerformed": [
+    "Browser interactive acceptance",
+    "Actual IndexedDB / Web Locks integration",
+    "GLSL compilation / GPU rendering",
+    "Actual user saved-world regression",
+    "Real driver context-loss/restoration",
+    "Device FPS at 1080p+",
+    "Touch and projected-handle interaction on hardware"
+  ]
+}
