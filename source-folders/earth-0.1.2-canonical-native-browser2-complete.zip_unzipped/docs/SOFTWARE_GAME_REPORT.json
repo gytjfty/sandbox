@@ -1,0 +1,383 @@
+{
+  "version": "0.1.2-browser2",
+  "baseline": "0.1.0-canonical",
+  "targetFPS": 60,
+  "submitted": 2,
+  "completed": 1,
+  "contextLosses": 0,
+  "contextRestorations": 0,
+  "renderFPS": 0,
+  "resolution": [
+    1366,
+    762
+  ],
+  "cssViewport": [
+    1366,
+    762
+  ],
+  "devicePixelRatio": 1,
+  "resolutionMode": "native-device-pixels",
+  "automaticDownscaling": false,
+  "minimumRenderHeight": 0,
+  "operations": 46,
+  "nodes": 91,
+  "error": "",
+  "traversalRequested": "tiled",
+  "tiledTraversalActive": true,
+  "tiles": {
+    "builds": 1,
+    "fallback": false,
+    "references": 0,
+    "reason": "",
+    "unfilteredReferences": 12144,
+    "maxCandidates": 0,
+    "buildMs": 0.40000000002328306
+  },
+  "renderMetrics": {
+    "objectUploads": 2,
+    "terrainUploads": 1,
+    "terrainRebases": 1,
+    "objectAllocations": 1,
+    "terrainAllocations": 1,
+    "tileUploads": 1,
+    "fenceSkips": 72,
+    "frameCapSkips": 0,
+    "maxFramesInFlight": 1,
+    "cpuSubmitMs": 0.6999999999534339,
+    "gpuDrawMsEMA": 704.672433,
+    "gpuTimerSupported": true,
+    "gpuDisjoint": false,
+    "fpsBasis": "completed-fences-per-reporting-window"
+  },
+  "frameHistory": [
+    {
+      "atMs": 104.4,
+      "intervalMs": 0,
+      "cpuSubmitMs": 69.79999999998836,
+      "gpuDrawMsEMA": null,
+      "tiled": true,
+      "terrainUploads": 1,
+      "objectUploads": 1,
+      "tileUploads": 1
+    },
+    {
+      "atMs": 887.7,
+      "intervalMs": 783.3000000000001,
+      "cpuSubmitMs": 0.6999999999534339,
+      "gpuDrawMsEMA": 704.672433,
+      "tiled": true,
+      "terrainUploads": 1,
+      "objectUploads": 2,
+      "tileUploads": 1
+    }
+  ],
+  "callbackHistory": [
+    {
+      "atMs": 104.4,
+      "gapMs": 0
+    },
+    {
+      "atMs": 171,
+      "gapMs": 66.6
+    },
+    {
+      "atMs": 187.7,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 204.4,
+      "gapMs": 16.700000000000017
+    },
+    {
+      "atMs": 221,
+      "gapMs": 16.599999999999994
+    },
+    {
+      "atMs": 237.7,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 254.3,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 271,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 287.7,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 304.4,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 321,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 337.7,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 354.4,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 371.1,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 387.7,
+      "gapMs": 16.599999999999966
+    },
+    {
+      "atMs": 404.4,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 421.1,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 437.7,
+      "gapMs": 16.599999999999966
+    },
+    {
+      "atMs": 454.4,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 471,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 487.7,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 504.4,
+      "gapMs": 16.69999999999999
+    },
+    {
+      "atMs": 521,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 537.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 554.3,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 571,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 587.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 604.3,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 621,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 637.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 654.4,
+      "gapMs": 16.699999999999932
+    },
+    {
+      "atMs": 671,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 687.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 704.4,
+      "gapMs": 16.699999999999932
+    },
+    {
+      "atMs": 721,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 737.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 754.4,
+      "gapMs": 16.699999999999932
+    },
+    {
+      "atMs": 771,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 787.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 804.4,
+      "gapMs": 16.699999999999932
+    },
+    {
+      "atMs": 821,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 837.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 854.3,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 871.1,
+      "gapMs": 16.800000000000068
+    },
+    {
+      "atMs": 887.7,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 904.4,
+      "gapMs": 16.699999999999932
+    },
+    {
+      "atMs": 921.1,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 937.7,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 954.4,
+      "gapMs": 16.699999999999932
+    },
+    {
+      "atMs": 971,
+      "gapMs": 16.600000000000023
+    },
+    {
+      "atMs": 987.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1004.3,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1021,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1037.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1054.3,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1071,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1087.6,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1104.4,
+      "gapMs": 16.800000000000182
+    },
+    {
+      "atMs": 1121,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1137.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1154.4,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1171,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1187.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1204.3,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1221,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1237.7,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1254.3,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1271,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1287.6,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1304.3,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1321,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1337.6,
+      "gapMs": 16.59999999999991
+    },
+    {
+      "atMs": 1354.3,
+      "gapMs": 16.700000000000045
+    },
+    {
+      "atMs": 1371,
+      "gapMs": 16.700000000000045
+    }
+  ],
+  "simulation": {
+    "version": "0.1.2-browser2",
+    "time": 1.2500000000000004,
+    "overloadSeconds": 0,
+    "operations": 46,
+    "bodies": 10,
+    "busy": false,
+    "paused": false,
+    "editing": false
+  },
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/134.0.6998.35 Safari/537.36"
+}

@@ -1,0 +1,145 @@
+{
+  "version": "0.1.2-browser2",
+  "reconstructedAndRetestedThisResponse": true,
+  "syntax": [
+    {
+      "file": "simulation-worker.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "editor-ui.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "renderer.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "main.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "protocol.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "terrain-query.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "config.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "editor.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "terrain-tiles.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "physics.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "terrain.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "persistence.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "material.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "view-math.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "input.js",
+      "passed": true,
+      "stderr": ""
+    },
+    {
+      "file": "accounting-worker.js",
+      "passed": true,
+      "stderr": ""
+    }
+  ],
+  "nodeTopLevelTests": 8,
+  "nodeTestsPassed": true,
+  "exactCPUFieldComparisons": 7601,
+  "tileCoverageRays": 150000,
+  "browser": "Chromium with SwiftShader software rendering",
+  "pixelCases": 9,
+  "comparedPixels": 4601784,
+  "differentComponents": 0,
+  "nativeDPR1": [
+    1366,
+    762
+  ],
+  "nativeDPR2": [
+    1366,
+    762
+  ],
+  "editorHistory": [
+    2,
+    1,
+    2
+  ],
+  "minedInventory": 500,
+  "builtInventory": 468,
+  "builtBodies": 1,
+  "reload": {
+    "inventory": true,
+    "ops": true,
+    "bodyIDs": true
+  },
+  "contextRecovery": {
+    "simulationContinued": true,
+    "drawResumed": true,
+    "error": "",
+    "tiledAfterRestore": true
+  },
+  "stationaryUploadDeltas": {
+    "terrainUploads": 0,
+    "objectUploads": 0,
+    "tileUploads": 0
+  },
+  "referenceModeDisablesTiling": true,
+  "syntheticSeed": {
+    "ops": 46,
+    "bodies": 10,
+    "inventory": 5936
+  },
+  "syntheticLoadedOperations": 46,
+  "syntheticLoadedBodies": 10,
+  "syntheticRendererError": "",
+  "workerOnlyRecovery": {
+    "returnedOnce": true,
+    "noDuplicateCredit": true,
+    "graphicsCalls": 0
+  },
+  "pageErrors": [],
+  "consoleMessages": [],
+  "comparisonPageErrors": [],
+  "hardware60FPSVerified": false,
+  "original1005AssertionSuiteRerun": false
+}

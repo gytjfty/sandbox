@@ -1,0 +1,182 @@
+[
+  {
+    "scene": "empty",
+    "components": 1440000,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 1,
+      "fallback": false,
+      "references": 0,
+      "reason": "",
+      "unfilteredReferences": 0,
+      "maxCandidates": 0,
+      "buildMs": 0.10000000000582077
+    },
+    "resolution": [
+      800,
+      450
+    ],
+    "error": ""
+  },
+  {
+    "scene": "46 cuts",
+    "components": 1440000,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 2,
+      "fallback": false,
+      "references": 264,
+      "reason": "",
+      "unfilteredReferences": 4784,
+      "maxCandidates": 21,
+      "buildMs": 0.6000000000058208
+    },
+    "resolution": [
+      800,
+      450
+    ],
+    "error": ""
+  },
+  {
+    "scene": "46 ordered cuts and fills",
+    "components": 1440000,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 3,
+      "fallback": false,
+      "references": 264,
+      "reason": "",
+      "unfilteredReferences": 4784,
+      "maxCandidates": 21,
+      "buildMs": 0.39999999999417923
+    },
+    "resolution": [
+      800,
+      450
+    ],
+    "error": ""
+  },
+  {
+    "scene": "149cuts",
+    "components": 1440000,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 4,
+      "fallback": false,
+      "references": 614,
+      "reason": "",
+      "unfilteredReferences": 15496,
+      "maxCandidates": 28,
+      "buildMs": 0.8000000000174623
+    },
+    "resolution": [
+      800,
+      450
+    ],
+    "error": ""
+  },
+  {
+    "scene": "camera-in-fill",
+    "components": 1440000,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 5,
+      "fallback": false,
+      "references": 104,
+      "reason": "",
+      "unfilteredReferences": 104,
+      "maxCandidates": 1,
+      "buildMs": 0
+    },
+    "resolution": [
+      800,
+      450
+    ],
+    "error": ""
+  },
+  {
+    "scene": "camera-in-cut",
+    "components": 1440000,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 6,
+      "fallback": false,
+      "references": 140,
+      "reason": "",
+      "unfilteredReferences": 208,
+      "maxCandidates": 2,
+      "buildMs": 0.10000000000582077
+    },
+    "resolution": [
+      800,
+      450
+    ],
+    "error": ""
+  },
+  {
+    "scene": "high-altitude",
+    "components": 1440000,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 7,
+      "fallback": false,
+      "references": 2,
+      "reason": "",
+      "unfilteredReferences": 208,
+      "maxCandidates": 2,
+      "buildMs": 0
+    },
+    "resolution": [
+      800,
+      450
+    ],
+    "error": ""
+  },
+  {
+    "scene": "149 cuts at 1366x762 native",
+    "components": 4163568,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 8,
+      "fallback": false,
+      "references": 1208,
+      "reason": "",
+      "unfilteredReferences": 39336,
+      "maxCandidates": 21,
+      "buildMs": 0.9000000000232831
+    },
+    "resolution": [
+      1366,
+      762
+    ],
+    "error": ""
+  },
+  {
+    "scene": "forced safe fallback",
+    "components": 4163568,
+    "different": 0,
+    "maxDifference": 0,
+    "tiles": {
+      "builds": 9,
+      "fallback": true,
+      "references": 0,
+      "reason": "tile reference budget",
+      "unfilteredReferences": null,
+      "maxCandidates": null,
+      "buildMs": 0
+    },
+    "resolution": [
+      1366,
+      762
+    ],
+    "error": ""
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "baseline": "earth-0.1.0-canonical-complete.zip_unzipped",
+  "reconstruction": "Canonical source and integrated browser1/browser2 implementation preserved in this conversation; compact formatting differs from original files.",
+  "newGPUWork": [
+    "src/terrain-tiles.js",
+    "tiled analytic fragment traversal",
+    "integer tile-list texture uploads",
+    "same-scene reference toggle"
+  ],
+  "otherRetainedWork": [
+    "native viewport resolution",
+    "resource reuse",
+    "CPU ordered distance-field index",
+    "anchor hysteresis",
+    "graphics recovery",
+    "diagnostics"
+  ],
+  "notImplemented": [
+    "CPU occupancy/raycast acceleration",
+    "physics broad phase",
+    "high-speed upload elimination",
+    "hardware 60-FPS acceptance"
+  ],
+  "repositoryModified": false
+}
