@@ -1,0 +1,110 @@
+TAP version 13
+# Subtest: fixed world Sun at one au, angular size increases during approach
+ok 1 - fixed world Sun at one au, angular size increases during approach
+  ---
+  duration_ms: 1.601398
+  ...
+# Subtest: stellar sweep clips crossing the entire star, permits retreat, rejects invalid inside start
+ok 2 - stellar sweep clips crossing the entire star, permits retreat, rejects invalid inside start
+  ---
+  duration_ms: 0.354629
+  ...
+# Subtest: 2000 random stellar segments retain boundary margin; repeat minimum-speed approaches do not erode it
+ok 3 - 2000 random stellar segments retain boundary margin; repeat minimum-speed approaches do not erode it
+  ---
+  duration_ms: 46.970031
+  ...
+# Subtest: optional navigation validates without changing legacy ledgers
+ok 4 - optional navigation validates without changing legacy ledgers
+  ---
+  duration_ms: 0.612679
+  ...
+# Subtest: cruise speed bound, destination slowdown and save-domain clipping
+ok 5 - cruise speed bound, destination slowdown and save-domain clipping
+  ---
+  duration_ms: 0.31272
+  ...
+# Subtest: 7601 exact ordered distance-field comparisons
+ok 6 - 7601 exact ordered distance-field comparisons
+  ---
+  duration_ms: 123.807375
+  ...
+# Subtest: append refreshes cached CPU query
+ok 7 - append refreshes cached CPU query
+  ---
+  duration_ms: 0.451434
+  ...
+# Subtest: native sizing and anchor hysteresis
+ok 8 - native sizing and anchor hysteresis
+  ---
+  duration_ms: 1.05258
+  ...
+# Subtest: accounting and whole-part recovery ledger
+ok 9 - accounting and whole-part recovery ledger
+  ---
+  duration_ms: 14.483211
+  ...
+# Subtest: editor undo redo import export close retention
+ok 10 - editor undo redo import export close retention
+  ---
+  duration_ms: 0.683573
+  ...
+# Subtest: cavity ray and 660 physics steps
+ok 11 - cavity ray and 660 physics steps
+  ---
+  duration_ms: 9.470725
+  ...
+# Subtest: 150000 tile-coverage rays retain all intersecting spheres
+ok 12 - 150000 tile-coverage rays retain all intersecting spheres
+  ---
+  duration_ms: 101.70442
+  ...
+# Subtest: tile leaf order, stationary caching and safe budget fallback
+ok 13 - tile leaf order, stationary caching and safe budget fallback
+  ---
+  duration_ms: 6.174106
+  ...
+# Subtest: small look input escapes exact radial face-Earth and face-away directions
+ok 14 - small look input escapes exact radial face-Earth and face-away directions
+  ---
+  duration_ms: 1.545307
+  ...
+# Subtest: editor basis remains orthogonal when opened looking directly toward Earth
+ok 15 - editor basis remains orthogonal when opened looking directly toward Earth
+  ---
+  duration_ms: 0.422383
+  ...
+# Subtest: camera basis is orthonormal toward/away from Earth; zero signs do not affect central ray
+ok 16 - camera basis is orthonormal toward/away from Earth; zero signs do not affect central ray
+  ---
+  duration_ms: 1.478658
+  ...
+# Subtest: actual simulation command handler mines, builds, recovers once and retains ledger
+ok 17 - actual simulation command handler mines, builds, recovers once and retains ledger
+  ---
+  duration_ms: 18.318112
+  ...
+# Subtest: actual simulation approaches Sun, saves/reloads location and preserves edits, parts, inventory
+ok 18 - actual simulation approaches Sun, saves/reloads location and preserves edits, parts, inventory
+  ---
+  duration_ms: 22.610123
+  ...
+# Subtest: cruise command, editor guard, navigation autosave without bodies and flight toggle
+ok 19 - cruise command, editor guard, navigation autosave without bodies and flight toggle
+  ---
+  duration_ms: 7.787278
+  ...
+# Subtest: full Earth-Sun-Earth worker round trip preserves world and prevents Earth reentry tunnelling
+ok 20 - full Earth-Sun-Earth worker round trip preserves world and prevents Earth reentry tunnelling
+  ---
+  duration_ms: 186.479892
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 757.469169
