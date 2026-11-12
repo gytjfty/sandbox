@@ -1,7 +1,0 @@
-{
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "test": "node tests/startup.test.mjs && node tests/core.test.mjs"
-  }
-}

@@ -1,1 +1,0 @@
-import {measureChange,buildTree} from './terrain.js';self.onmessage=({data:d})=>{try{const units=d.edit?measureChange(d.edit,d.ops):0,ops=d.edit?[...d.ops,{...d.edit,units}]:d.ops,nodes=buildTree(ops);postMessage({id:d.id,units,nodes},[nodes.buffer]);}catch(e){postMessage({id:d.id,error:e.message});}};
