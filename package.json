@@ -1,0 +1,12 @@
+{
+  "name": "planetary-simulation",
+  "version": "0.1.0",
+  "description": "First-person planetary-scale simulation in Three.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server . -p 8080 -o"
+  },
+  "devDependencies": {
+    "http-server": "^0.13.0"
+  }
+}
