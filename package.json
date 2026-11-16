@@ -8,5 +8,23 @@
   },
   "devDependencies": {
     "http-server": "^0.13.0"
+  },
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gytjfty/sandbox.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gytjfty/sandbox/issues"
+  },
+  "homepage": "https://github.com/gytjfty/sandbox#readme",
+  "dependencies": {
+    "three": "^0.165.0"
   }
 }

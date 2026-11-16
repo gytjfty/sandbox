@@ -1,19 +1,25 @@
-/**
- * UI — Minimal HUD and pause menu.
- */
+/** UI — Minimal HUD and pause menu. */
 
 export class HUD {
   constructor(elementId) {
     this.element = document.getElementById(elementId);
   }
 
-  updateStats({ fps, simTime, timeScale, entityCount }) {
+  updateStats({ fps, timeScale, entityCount, timeString, dateString, weather }) {
     if (!this.element) return;
     this.element.innerHTML = `
       FPS: ${Math.round(fps)}<br>
-      Sim Time: ${simTime.toFixed(1)}s<br>
+      ${dateString} ${timeString}<br>
       Time Scale: ${timeScale}x<br>
-      Entities: ${entityCount}
+      ${weather}<br>
+      Entities: ${entityCount}<br>
+      <br>
+      Click: raise/lower terrain
+      Shift+Click: carve cave/tunnel
+      Ctrl+Click: lower terrain
+      Mouse over entity: see info
+      +/-: time speed
+      0: real-time
     `;
   }
 }

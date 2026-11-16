@@ -1,206 +1,93 @@
 /**
- * Simulation — All systems (low-depth sketches).
- * Each system mirrors a section of the Game Design Overview.
- * init() and tick(deltaTime, clock) are stubs to be fleshed out.
+ * Simulation — System registry and game loop.
+ * Modular system architecture with shared world state.
+ * Distinction between simulation state and rendered objects.
+ * Systems update at appropriate intervals independent of render frame rate.
  */
 
-export const entityList = [];
+import { Clock } from './core.js';
+import { State, world, player, terrain } from './core.js';
 
-// ── Section 2: World ──
-export class WorldSystem {
-  constructor() {
-    this.planet = { radius: 6371000, type: 'oblate spheroid', terrainModifiable: true };
-    this.terrain = {};
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 3: Time & History ──
-export class TimeSystem {
-  constructor() {
-    this.currentEra = 'modern';
-    this.year = 2024;
-    this.month = 1;
-    this.day = 1;
-    this.hour = 12;
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 5 & 6: Entities ──
-export class EntitiesSystem {
-  constructor() {
-    this.entities = entityList;
-    this.playerEntity = null;
-  }
-  init() {}
-  tick(dt, clock) {}
-  addEntity(e) { this.entities.push(e); }
-}
-
-// ── Section 7: Biology & Ecosystems ──
-export class BiologySystem {
-  constructor() {
-    this.organisms = [];
-    this.ecosystems = {};
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 8: Sensory Simulation ──
-export class SensorySystem {
-  constructor() {
-    this.senses = ['sight', 'sound', 'smell', 'taste', 'touch', 'balance'];
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 9: Weather, Climate & Water ──
-export class WeatherSystem {
-  constructor() {
-    this.temperature = 15;
-    this.humidity = 50;
-    this.wind = { speed: 0, direction: 0 };
-    this.precipitation = 'none';
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 10: Chemistry & Materials ──
-export class ChemistrySystem {
-  constructor() {
-    this.elements = {};
-    this.compounds = {};
-    this.reactions = {};
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 11: Construction & Creation ──
-export class ConstructionSystem {
-  constructor() {
-    this.blueprints = [];
-    this.activeDesign = null;
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 12: Civilization & Society ──
-export class CivilizationSystem {
-  constructor() {
-    this.civilizations = [];
-    this.settlements = [];
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 13: Economics ──
-export class EconomicsSystem {
-  constructor() {
-    this.commodities = {};
-    this.markets = [];
-    this.governments = [];
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 14: Technology & Science ──
-export class TechnologySystem {
-  constructor() {
-    this.knownTechnologies = [];
-    this.researchOrganizations = [];
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 15: Communication & Language ──
-export class CommunicationSystem {
-  constructor() {
-    this.languages = [];
-    this.informationNetworks = [];
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 16: Infrastructure ──
-export class InfrastructureSystem {
-  constructor() {
-    this.networks = { roads: [], railways: [], powerGrid: [], waterSewage: [], telecommunications: [] };
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 17: Health ──
-export class HealthSystem {
-  constructor() {
-    this.diseases = [];
-    this.medicalKnowledge = [];
-    this.hospitals = [];
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── Section 18: Disasters & Astronomy ──
-export class DisastersSystem {
-  constructor() {
-    this.activeEvents = [];
-    this.astronomy = { dayNightCycle: true, seasons: true, orbits: [] };
-  }
-  init() {}
-  tick(dt, clock) {}
-}
-
-// ── System registry & lifecycle ──
+/** Shared system instances — modular systems that share world state. */
 
 export const systems = {
-  world: new WorldSystem(),
-  time: new TimeSystem(),
-  entities: new EntitiesSystem(),
-  biology: new BiologySystem(),
-  sensory: new SensorySystem(),
-  weather: new WeatherSystem(),
-  chemistry: new ChemistrySystem(),
-  construction: new ConstructionSystem(),
-  civilization: new CivilizationSystem(),
-  economics: new EconomicsSystem(),
-  technology: new TechnologySystem(),
-  communication: new CommunicationSystem(),
-  infrastructure: new InfrastructureSystem(),
-  health: new HealthSystem(),
-  disasters: new DisastersSystem(),
+  world: world,
+  time: {
+    currentEra: 'modern',
+    year: 2024,
+    month: 1,
+    day: 1,
+    hour: 12,
+    minute: 0,
+    second: 0,
+    timeScale: 1.0,
+    dayLengthMinutes: 24 * 60,
+    setTimeScale(scale) {
+      this.timeScale = scale;
+    },
+    getTimeOfDay() {
+      const h = this.hour + this.minute / 60 + this.second / 3600;
+      return h / 24;
+    },
+    isDay() {
+      const tod = this.getTimeOfDay();
+      return tod > 0.25 && tod < 0.75;
+    },
+    isNight() {
+      return !this.isDay();
+    },
+    getTimeString() {
+      const h = String(this.hour).padStart(2, '0');
+      const m = String(Math.floor(this.minute)).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+  },
+  entities: {
+    entities: [],
+    add: (entity) => { this.entities.push(entity); }
+  },
+  biology: { init() {}, tick(dt, clock) {} },
+  sensory: { init() {}, tick(dt, clock) {} },
+  weather: { init() {}, tick(dt, clock) {} },
+  chemistry: { init() {}, tick(dt, clock) {} },
+  construction: { init() {}, tick(dt, clock) {} },
+  civilization: { init() {}, tick(dt, clock) {} },
+  economics: { init() {}, tick(dt, clock) {} },
+  technology: { init() {}, tick(dt, clock) {} },
+  communication: { init() {}, tick(dt, clock) {} },
+  infrastructure: { init() {}, tick(dt, clock) {} },
+  health: { init() {}, tick(dt, clock) {} },
+  disasters: { init() {}, tick(dt, clock) {} }
 };
 
+/** Core simulation object — manages the game loop and system ticks. */
+
+export const simulation = {
+  init() {
+    terrain.init();
+    State.entities = [];
+    Object.values(systems).forEach((sys) => {
+      if (typeof sys.init === 'function') sys.init();
+    });
+    log('Simulation initialized');
+  },
+  tick(dt, clock) {
+    clock.tick();
+    State.time.simulationTime = clock.simulationTime;
+    const simMinutesPerDay = 24 * 60;
+    const simDayFraction = (clock.simulationTime % simMinutesPerDay) / simMinutesPerDay;
+    updateLighting(simDayFraction);
+  }
+};
+
+function updateLighting(timeOfDay) {}
+
+/** Initialize the simulation (called from main.js) */
 export function init() {
-  Object.values(systems).forEach((sys) => { if (sys.init) sys.init(); });
+  simulation.init();
 }
 
-export function tick(deltaTime, clock) {
-  systems.time.tick(deltaTime, clock);
-  systems.world.tick(deltaTime, clock);
-  systems.entities.tick(deltaTime, clock);
-  systems.biology.tick(deltaTime, clock);
-  systems.sensory.tick(deltaTime, clock);
-  systems.weather.tick(deltaTime, clock);
-  systems.chemistry.tick(deltaTime, clock);
-  systems.construction.tick(deltaTime, clock);
-  systems.civilization.tick(deltaTime, clock);
-  systems.economics.tick(deltaTime, clock);
-  systems.technology.tick(deltaTime, clock);
-  systems.communication.tick(deltaTime, clock);
-  systems.infrastructure.tick(deltaTime, clock);
-  systems.health.tick(deltaTime, clock);
-  systems.disasters.tick(deltaTime, clock);
+/** Game loop step (called from main.js) */
+export function gameLoop(dt) {
+  simulation.tick(dt, clock);
 }

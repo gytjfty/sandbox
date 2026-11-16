@@ -1,6 +1,6 @@
 /**
  * Core — Simulation clock and global state.
- * Single source of truth for the current frame.
+ * Single source of truth for simulation data independent of Three.js.
  */
 
 /** ---- Clock ---- */
@@ -35,24 +35,56 @@ export class Clock {
   }
 }
 
-/** ---- State ---- */
+/** ---- Global State ---- */
 
 export const State = {
-  world: {},
-  time: {},
+  // Planetary data
+  planet: {
+    radius: 6371000,      // Mean radius in meters
+    equatorialRadius: 6378137,  // WGS84 equatorial radius
+    polarRadius: 6356752,       // WGS84 polar radius
+    flattening: 1 / 298.257223563,
+    type: 'oblate spheroid'
+  },
+  // Time
+  time: {
+    simulationTime: 0,
+    year: 2024,
+    month: 1,
+    day: 1,
+    hour: 12,
+    minute: 0,
+    second: 0,
+    timeScale: 1.0
+  },
+  // Player
+  player: {
+    // Position in world coordinates (meters, on or above surface)
+    position: { x: 0, y: 0, z: 0 },
+    // Orientation (radians)
+    rotation: { x: 0, y: 0, z: 0 },
+    // Height above terrain (meters)
+    heightAboveGround: 0
+  },
+  // Camera (Three.js specific, kept separate from player core data)
+  camera: {
+    position: { x: 0, y: 0, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 }
+  },
+  // World modifications
+  modifications: [],
+  // Entities
   entities: [],
-  biology: {},
-  sensory: {},
-  weather: {},
-  chemistry: {},
-  construction: {},
-  civilization: {},
-  economics: {},
-  technology: {},
-  communication: {},
-  infrastructure: {},
-  health: {},
-  disasters: {},
-  cameraPosition: { x: 0, y: 2, z: 5 },
-  cameraRotation: { x: 0, y: 0, z: 0 },
+  // Current system flags
+  isDay: true,
+  isPaused: false
 };
+
+// Initialize with default player position on Earth surface at prime meridian, equator
+State.player.position = {
+  x: 0,
+  y: 0,
+  z: 6371000  // On surface at mean radius
+};
+
+export default Clock;

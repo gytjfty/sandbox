@@ -1,95 +1,177 @@
 /**
  * main.js — Bootstrap.
  * Wires core, simulation, graphics, input, and UI into one game loop.
+ * All Three.js object creation happens inside functions, never at module scope.
  */
 
+import * as THREE from 'three';
 import { Clock } from './core.js';
 import { State } from './core.js';
-import { init as initSim, tick as tickSim, entityList } from './simulation.js';
+import { init as initSim, gameLoop as simGameLoop, systems } from './simulation.js';
 import {
   init as initGfx,
   sync as syncGfx,
   resize as resizeGfx,
+  updateLighting,
   getRenderer,
   getScene,
   getCamera,
-} from './graphics.js';
-import { Controls } from './input.js';
+  getTerrain,
+  getPlanetRadius,
+} from './rendering.js';
+import { player } from './player.js';
 import { HUD } from './ui.js';
-import { Menu } from './ui.js';
 
-const canvas = document.createElement('canvas');
-document.body.appendChild(canvas);
+const canvas = document.getElementById('canvas') || document.createElement('canvas');
+if (!document.getElementById('canvas')) document.body.appendChild(canvas);
+
+const overlay = document.getElementById('overlay');
+const statusEl = document.getElementById('status');
+const errorEl = document.getElementById('error');
 
 const clock = new Clock();
-const hud = new HUD('hud');
-const menu = new Menu('menu', startApp);
+const hud = new HUD();
 
-let gameLoop = null;
-let controls = null;
-
+/** Start the application */
 function startApp() {
-  if (gameLoop) return;
+  try {
+    if (gameLoop) return;
 
-  // Simulation
-  initSim();
-  State.entities = entityList;
+    if (!window.THREE) {
+      err('Three.js is not loaded');
+      return;
+    }
 
-  // Graphics (Three.js)
-  initGfx(canvas);
+    // Hide overlay
+    if (overlay) overlay.classList.add('hidden');
 
-  // Resize
-  window.addEventListener('resize', () => resizeGfx());
+    // Initialize simulation
+    initSim();
+    State.entities = systems.entities || [];
 
-  // First-person controls (needs camera from graphics)
-  controls = new Controls(getCamera(), canvas);
+    // Initialize graphics
+    initGfx(canvas);
 
-  // Game loop
-  gameLoop = {
-    running: true,
-    lastStatsTime: performance.now(),
-    frameCount: 0,
-    animationFrameId: null,
+    // Initialize player with camera and DOM element
+    const camera = getCamera();
+    player.init(camera, canvas);
 
-    loop() {
-      if (!this.running) return;
+    // Resize handler
+    window.addEventListener('resize', () => resizeGfx());
 
-      const dt = clock.tick();
+    // Raycaster and mouse for terrain modification
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
 
-      controls.update(dt);
-      tickSim(dt, clock);
-      syncGfx(dt);
+    // Click-to-modify-terrain
+    canvas.addEventListener('mousedown', (event) => {
+      if (!player.isPointerLocked) return;
 
-      getRenderer().render(getScene(), getCamera());
+      const camera = getCamera();
+      raycaster.setFromCamera(mouse, camera);
 
-      this.frameCount++;
-      const now = performance.now();
-      if (now - this.lastStatsTime > 1000) {
+      // Get terrain and check intersection
+      const terrain = getTerrain();
+      const planetRadius = getPlanetRadius();
+      const camPos = camera.position;
+
+      // Simple ray-sphere intersection for terrain modification
+      const toCenter = new THREE.Vector3().subVectors(new THREE.Vector3(0, 0, 0), camPos);
+      const distance = camPos.length();
+      const underSurface = distance < planetRadius;
+
+      if (event.shiftKey) {
+        // Carve cave/tunnel
+        systems.world.carveTerrain(camPos.x, camPos.y, camPos.z, 50);
+        terrain.carveTerrain(camPos.x, camPos.y, camPos.z, 50);
+      } else if (event.ctrlKey) {
+        // Lower terrain
+        systems.world.modifyTerrain(camPos.x, camPos.y, camPos.z, 50, 10, 'lower');
+        terrain.modifyTerrain(camPos.x, camPos.y, camPos.z, 50, 10, 'lower');
+      } else {
+        // Raise terrain
+        systems.world.modifyTerrain(camPos.x, camPos.y, camPos.z, 50, 10, 'raise');
+        terrain.modifyTerrain(camPos.x, camPos.y, camPos.z, 50, 10, 'raise');
+      }
+    });
+
+    // Key controls for time acceleration
+    window.addEventListener('keydown', (event) => {
+      if (event.code === 'Equal' || event.code === 'NumpadAdd') {
+        const newScale = Math.min(clock.timeScale * 2, 100);
+        clock.setTimeScale(newScale);
+        systems.time.setTimeScale(newScale);
+        log('Time scale: ' + newScale + 'x');
+      } else if (event.code === 'Minus' || event.code === 'NumpadSubtract') {
+        const newScale = Math.max(clock.timeScale / 2, 0.1);
+        clock.setTimeScale(newScale);
+        systems.time.setTimeScale(newScale);
+        log('Time scale: ' + newScale + 'x');
+      } else if (event.code === 'Digit0' || event.code === 'Numpad0') {
+        clock.setTimeScale(1.0);
+        systems.time.setTimeScale(1.0);
+        log('Time scale: 1x (real-time)');
+      }
+    });
+
+    // Game loop
+    gameLoop = {
+      running: true,
+      lastTime: performance.now(),
+      frameCount: 0,
+      animationFrameId: null,
+
+      loop() {
+        if (!this.running) return;
+
+        const now = performance.now();
+        const dt = clock.tick();
+
+        // Update HUD
         hud.updateStats({
           fps: clock.fps,
-          simTime: clock.simulationTime,
           timeScale: clock.timeScale,
-          entityCount: entityList.length,
+          entityCount: systems.entities ? systems.entities.length : 0,
+          timeString: systems.time.getTimeString(),
+          dateString: `${systems.time.year}-${systems.time.month}`,
+          weather: 'Clear'
         });
-        this.lastStatsTime = now;
-        this.frameCount = 0;
+
+        // Simulation step
+        simGameLoop(dt);
+
+        // Sync graphics state
+        syncGfx(dt);
+
+        // Render frame
+        const renderer = getRenderer();
+        const scene = getScene();
+        const camera = getCamera();
+
+        if (renderer && scene && camera) {
+          renderer.render(scene, camera);
+        }
+
+        // Request next frame
+        this.animationFrameId = requestAnimationFrame(() => this.loop());
       }
+    };
 
-      this.animationFrameId = requestAnimationFrame(() => this.loop());
-    },
+    // Start the game loop
+    gameLoop.loop();
 
-    stop() {
-      this.running = false;
-      if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
-    },
-  };
-
-  gameLoop.loop();
+    log('Game loop started - first-person planetary simulation');
+  } catch (e) {
+    err('Startup error: ' + e.message);
+    console.error(e);
+  }
 }
 
-window.addEventListener('keydown', (event) => {
-  if (event.code === 'Escape' && gameLoop) {
-    gameLoop.stop();
-    menu.show();
+/** Start prompt - click to begin */
+canvas.addEventListener('click', () => {
+  if (!gameLoop) {
+    const menuStatus = document.getElementById('menu-status');
+    if (menuStatus) menuStatus.textContent = 'Click again to start...';
+    setTimeout(startApp, 200);
   }
 });
