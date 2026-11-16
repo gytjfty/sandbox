@@ -5,14 +5,12 @@
  */
 
 import * as THREE from 'three';
-import { Clock } from './core.js';
-import { State } from './core.js';
+import { State, clock } from './core.js';
 import { init as initSim, gameLoop as simGameLoop, systems } from './simulation.js';
 import {
   init as initGfx,
   sync as syncGfx,
   resize as resizeGfx,
-  updateLighting,
   getRenderer,
   getScene,
   getCamera,
@@ -29,18 +27,22 @@ const overlay = document.getElementById('overlay');
 const statusEl = document.getElementById('status');
 const errorEl = document.getElementById('error');
 
-const clock = new Clock();
+function log(msg) {
+  if (statusEl) statusEl.textContent = msg;
+  console.log(msg);
+}
+function err(msg) {
+  if (errorEl) errorEl.textContent = msg;
+  console.error(msg);
+}
+
 const hud = new HUD();
+let gameLoop;
 
 /** Start the application */
 function startApp() {
   try {
     if (gameLoop) return;
-
-    if (!window.THREE) {
-      err('Three.js is not loaded');
-      return;
-    }
 
     // Hide overlay
     if (overlay) overlay.classList.add('hidden');
@@ -55,6 +57,13 @@ function startApp() {
     // Initialize player with camera and DOM element
     const camera = getCamera();
     player.init(camera, canvas);
+
+    // Request pointer lock (user gesture from the click that started the app)
+    try {
+      canvas.requestPointerLock();
+    } catch (e) {
+      // Pointer lock may be denied by the browser; not fatal.
+    }
 
     // Resize handler
     window.addEventListener('resize', () => resizeGfx());
@@ -127,11 +136,16 @@ function startApp() {
         const now = performance.now();
         const dt = clock.tick();
 
+        // Player movement (first-person controls)
+        player.update(dt);
+
         // Update HUD
         hud.updateStats({
           fps: clock.fps,
           timeScale: clock.timeScale,
-          entityCount: systems.entities ? systems.entities.length : 0,
+          entityCount: systems.entities && systems.entities.entities
+            ? systems.entities.entities.length
+            : 0,
           timeString: systems.time.getTimeString(),
           dateString: `${systems.time.year}-${systems.time.month}`,
           weather: 'Clear'
@@ -169,9 +183,5 @@ function startApp() {
 
 /** Start prompt - click to begin */
 canvas.addEventListener('click', () => {
-  if (!gameLoop) {
-    const menuStatus = document.getElementById('menu-status');
-    if (menuStatus) menuStatus.textContent = 'Click again to start...';
-    setTimeout(startApp, 200);
-  }
+  startApp();
 });

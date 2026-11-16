@@ -6,7 +6,8 @@
  */
 
 import { Vector3 } from 'three';
-import { State, world } from './core.js';
+import { State } from './core.js';
+import { world } from './world.js';
 
 export class PlayerSystem {
   constructor() {
@@ -27,11 +28,27 @@ export class PlayerSystem {
     this._onKeyUp = this._onKeyUp.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onClick = this._onClick.bind(this);
+    this._onPointerLockChange = this._onPointerLockChange.bind(this);
+    this._onPointerLockError = this._onPointerLockError.bind(this);
     domElement.addEventListener('click', this._onClick);
     window.addEventListener('keydown', this._onKeyDown);
     window.addEventListener('keyup', this._onKeyUp);
     document.addEventListener('mousemove', this._onMouseMove);
+    document.addEventListener('pointerlockchange', this._onPointerLockChange);
+    document.addEventListener('pointerlockerror', this._onPointerLockError);
     this._resetPlayerPosition();
+  }
+
+  get isPointerLocked() {
+    return document.pointerLockElement === this.domElement;
+  }
+
+  _onPointerLockChange() {
+    this.pointerLocked = document.pointerLockElement === this.domElement;
+  }
+
+  _onPointerLockError() {
+    this.pointerLocked = false;
   }
 
   _resetPlayerPosition() {
@@ -121,6 +138,7 @@ export class PlayerSystem {
     this.camera.position.y += moveY;
     this.camera.position.z += moveZ;
     State.player.position = { x: this.camera.position.x, y: this.camera.position.y, z: this.camera.position.z };
+    State.camera.position = { x: this.camera.position.x, y: this.camera.position.y, z: this.camera.position.z };
     this._keepOnSurface();
     State.player.rotation = { x: this.camera.rotation.x, y: this.camera.rotation.y, z: 0 };
     State.camera.rotation = { x: this.camera.rotation.x, y: this.camera.rotation.y, z: 0 };
@@ -136,6 +154,7 @@ export class PlayerSystem {
       pos.x *= scale; pos.y *= scale; pos.z *= scale;
       this.camera.position.set(pos.x, pos.y, pos.z);
       State.player.position = { x: pos.x, y: pos.y, z: pos.z };
+      State.camera.position = { x: pos.x, y: pos.y, z: pos.z };
     }
   }
 }

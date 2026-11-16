@@ -5,12 +5,13 @@
  * Systems update at appropriate intervals independent of render frame rate.
  */
 
-import { Clock, State } from './core.js';
+import { Clock, State, clock } from './core.js';
 import { world } from './world.js';
 import { player } from './player.js';
 import { terrain } from './terrain.js';
+import { updateLighting } from './rendering.js';
 
-const clock = new Clock();
+// Shared clock — same instance used by main.js, so we never tick twice.
 
 /** Shared system instances — modular systems that share world state. */
 
@@ -73,18 +74,30 @@ export const simulation = {
     Object.values(systems).forEach((sys) => {
       if (typeof sys.init === 'function') sys.init();
     });
-    log('Simulation initialized');
+    console.log('Simulation initialized');
   },
   tick(dt, clock) {
-    clock.tick();
+    // clock is already ticked by main.js — never tick twice.
     State.time.simulationTime = clock.simulationTime;
-    const simMinutesPerDay = 24 * 60;
-    const simDayFraction = (clock.simulationTime % simMinutesPerDay) / simMinutesPerDay;
+
+    // Advance the wall-clock time of day from simulation seconds.
+    const simSecondsPerDay = 24 * 60 * 60;
+    const daySeconds = clock.simulationTime % simSecondsPerDay;
+    const totalMinutes = Math.floor(daySeconds / 60);
+    systems.time.hour = Math.floor(totalMinutes / 60);
+    systems.time.minute = totalMinutes % 60;
+    systems.time.second = Math.floor(daySeconds % 60);
+
+    const simDayFraction = daySeconds / simSecondsPerDay;
     updateLighting(simDayFraction);
+    State.isDay = systems.time.isDay();
+
+    // Tick every registered subsystem (stubs conserved for future systems).
+    Object.values(systems).forEach((sys) => {
+      if (typeof sys.tick === 'function') sys.tick(dt, clock);
+    });
   }
 };
-
-function updateLighting(timeOfDay) {}
 
 /** Initialize the simulation (called from main.js) */
 export function init() {

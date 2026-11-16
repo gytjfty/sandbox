@@ -87,4 +87,7 @@ State.player.position = {
   z: 6371000  // On surface at mean radius
 };
 
+/** Shared clock singleton — one source of time for the whole application. */
+export const clock = new Clock();
+
 export default Clock;

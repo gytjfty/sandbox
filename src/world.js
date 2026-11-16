@@ -5,7 +5,6 @@
  */
 
 import { Vector3 } from 'three';
-import { State } from './core.js';
 
 /**
  * WorldSystem — Core planetary data and operations.

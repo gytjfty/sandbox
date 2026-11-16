@@ -26,6 +26,14 @@
     #status { margin-bottom: 10px; font-size: 14px; }
     #error { color: #ff4444; font-size: 13px; margin-bottom: 10px; }
     #controls { color: #aaa; font-size: 12px; margin-top: auto; }
+    #hud {
+      position: fixed;
+      top: 10px; left: 10px;
+      color: #fff; font-family: monospace; font-size: 14px;
+      background: rgba(0,0,0,0.6); padding: 10px; border-radius: 4px;
+      pointer-events: none; z-index: 60; line-height: 1.5;
+      max-width: 320px;
+    }
     #menu {
       position: absolute;
       top: 50%; left: 50%;
@@ -55,6 +63,10 @@
 </head>
 <body>
   <canvas id="canvas"></canvas>
+
+  <!-- Always-visible HUD (shown during gameplay) -->
+  <div id="hud"></div>
+
   <div id="overlay">
     <div id="status">Initializing...</div>
     <div id="error"></div>
@@ -62,12 +74,22 @@
       WASD to move | Mouse to look | Esc to pause | +/- to adjust time speed
     </div>
   </div>
+
   <div id="menu">
     <h1>Planetary Simulation</h1>
     <p id="menu-status">Loading world...</p>
     <button id="start-btn">Start</button>
   </div>
-  <!-- Three.js loaded from npm -->
+
+  <!-- Import map: standalone Three.js (no build step). Works on GitHub Pages. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.165.0/build/three.module.js"
+      }
+    }
+  </script>
+
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

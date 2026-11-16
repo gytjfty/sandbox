@@ -5,11 +5,12 @@
  */
 
 import * as THREE from 'three';
-import { State, world, clock } from './core.js';
+import { State } from './core.js';
+import { world } from './world.js';
 import { terrain } from './terrain.js';
 import { player } from './player.js';
 
-let renderer, scene, camera;
+let renderer, scene, camera, ocean;
 let initialized = false;
 let directionalLight, ambientLight;
 

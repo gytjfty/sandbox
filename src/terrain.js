@@ -5,8 +5,8 @@
  * Supports multi-resolution loading and distance-based detail.
  */
 
-import { Vector3 } from 'three';
-import { State, world } from './core.js';
+import * as THREE from 'three';
+import { world } from './world.js';
 
 /** Elevation categories (meters above sea level, seaLevel = 0) */
 export const ElevationCategory = {
@@ -400,23 +400,20 @@ export class TerrainSystem {
     if (faceIndex === null) return;
 
     const res = this.resolution;
-    const effRes = this._getEffectiveResolution(cameraDistance);
-    const modRes = Math.min(res, effRes);
+    const offset = type === 'raise' ? strength : -strength;
 
-    for (let iy = 0; iy < modRes; iy++) {
-      for (let ix = 0; ix < modRes; ix++) {
-        const vu = (ix / (modRes - 1)) * 2 - 1;
-        const vv = (iy / (modRes - 1)) * 2 - 1;
+    for (let iy = 0; iy < res; iy++) {
+      const vv = (iy / (res - 1)) * 2 - 1;
+      for (let ix = 0; ix < res; ix++) {
+        const vu = (ix / (res - 1)) * 2 - 1;
         const du = vu - u;
         const dv = vv - v;
         const dist = Math.sqrt(du * du + dv * dv);
         const falloff = Math.exp(-(dist * dist) / (radius * 2));
+        const idx = iy * res + ix;
 
-        const offset = type === 'raise' ? strength : -strength;
-        const newHeight = this.heightfields[faceIndex][iy * modRes + ix] + offset * falloff * 10;
-
-        const clampedHeight = Math.max(-1000, Math.min(10000, newHeight));
-        this.heightfields[faceIndex][iy * modRes + ix] = clampedHeight;
+        const newHeight = this.heightfields[faceIndex][idx] + offset * falloff * 10;
+        this.heightfields[faceIndex][idx] = Math.max(-1000, Math.min(10000, newHeight));
       }
     }
 
@@ -553,9 +550,9 @@ export class TerrainSystem {
 
             const category = TerrainSystem.getCategory(h);
             const color = TerrainSystem.getColor(category);
-            colors[idx] = (color >> 16) & 0xff / 255;
-            colors[idx + 1] = (color >> 8) & 0xff / 255;
-            colors[idx + 2] = color & 0xff / 255;
+            colors[idx] = ((color >> 16) & 0xff) / 255;
+            colors[idx + 1] = ((color >> 8) & 0xff) / 255;
+            colors[idx + 2] = (color & 0xff) / 255;
           }
         }
 
