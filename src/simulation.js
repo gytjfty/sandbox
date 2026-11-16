@@ -5,8 +5,12 @@
  * Systems update at appropriate intervals independent of render frame rate.
  */
 
-import { Clock } from './core.js';
-import { State, world, player, terrain } from './core.js';
+import { Clock, State } from './core.js';
+import { world } from './world.js';
+import { player } from './player.js';
+import { terrain } from './terrain.js';
+
+const clock = new Clock();
 
 /** Shared system instances — modular systems that share world state. */
 
